@@ -9,7 +9,7 @@
     --bg: #f2eee7;
     --bg-accent: rgba(188, 180, 166, 0.22);
     --surface: rgba(255, 252, 247, 0.72);
-    --surface-strong: rgba(255, 255, 255, 0.88);
+    --surface-strong: rgba(255, 255, 255, 0.9);
     --surface-muted: rgba(255, 255, 255, 0.58);
     --line: rgba(28, 28, 28, 0.08);
     --line-strong: rgba(28, 28, 28, 0.14);
@@ -17,7 +17,7 @@
     --text-muted: #6e6a64;
     --text-soft: #8c877f;
     --accent: #151515;
-    --accent-soft: #e7e0d5;
+    --accent-soft: #ece4d8;
     --success: #2f6d54;
     --danger: #9d3d3d;
     --warning: #8f6632;
@@ -316,8 +316,8 @@
   .options-grid input:focus,
   #prompt:focus,
   #send:focus-visible,
+  .turn-details summary:focus-visible,
   .approval-actions button:focus-visible,
-  .thinking-toggle:focus-visible,
   .session-panel summary:focus-visible,
   #stopBtn:focus-visible {
     outline: 2px solid rgba(21, 21, 21, 0.18);
@@ -375,210 +375,239 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.9rem;
     padding-bottom: 0.15rem;
     scroll-padding-bottom: 6rem;
   }
 
-  .msg,
-  .activity-card,
-  .thinking-block,
-  .approval-block {
+  .turn-card,
+  .msg.system,
+  .msg.error {
     animation: rise 180ms ease;
   }
 
-  .msg {
-    max-width: min(100%, 42rem);
-    padding: 1rem 1.05rem;
-    border-radius: 1.5rem;
-    line-height: 1.68;
-    font-size: 0.97rem;
-    white-space: pre-wrap;
-    word-break: break-word;
-    box-shadow: var(--shadow);
-  }
-
-  .msg.user {
-    margin-left: auto;
-    background: var(--accent);
-    color: #fff;
-    border-top-right-radius: 0.55rem;
-  }
-
-  .msg.assistant {
+  .turn-card {
+    border: 1px solid var(--line);
+    border-radius: 1.65rem;
     background: var(--surface-strong);
-    border: 1px solid var(--line);
-    border-top-left-radius: 0.55rem;
-  }
-
-  .msg.system {
-    align-self: center;
-    max-width: 100%;
-    padding: 0.15rem 0;
-    background: transparent;
-    color: var(--text-soft);
-    font-size: 0.76rem;
-    box-shadow: none;
-  }
-
-  .msg.error {
-    background: rgba(255, 241, 239, 0.95);
-    border: 1px solid rgba(157, 61, 61, 0.14);
-    color: #7a1e1e;
-  }
-
-  .activity-card,
-  .thinking-block {
-    align-self: flex-start;
-    width: min(100%, 42rem);
-    border: 1px solid var(--line);
-    border-radius: 1.35rem;
-    background: var(--surface-muted);
-    backdrop-filter: blur(14px);
-    overflow: hidden;
     box-shadow: var(--shadow);
+    overflow: hidden;
   }
 
-  .activity-summary {
-    padding: 0.9rem 1rem;
-    display: grid;
-    gap: 0.25rem;
+  .turn-card[data-state="pending"],
+  .turn-card[data-state="running"],
+  .turn-card[data-state="stopping"] {
+    border-color: rgba(21, 21, 21, 0.14);
   }
 
-  .activity-label,
-  .thinking-label-title,
-  .approval-label {
+  .turn-card[data-state="failed"],
+  .turn-card[data-state="interrupted"] {
+    border-color: rgba(157, 61, 61, 0.18);
+  }
+
+  .turn-head {
+    padding: 1rem 1.05rem 0.95rem;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px);
+  }
+
+  .turn-head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.7rem;
+  }
+
+  .turn-label {
     font-size: 0.68rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-soft);
   }
 
-  .activity-meta,
-  .thinking-label-copy {
-    font-size: 0.84rem;
-    color: var(--text-muted);
-  }
-
-  .activity-meta {
-    font-family: var(--mono);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .activity-body,
-  .thinking-content,
-  .approval-block .detail {
-    padding: 0.95rem 1rem 1rem;
-    border-top: 1px solid var(--line);
-    font-family: var(--mono);
-    font-size: 0.77rem;
-    line-height: 1.72;
-    white-space: pre-wrap;
-    color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.34);
-    overflow: auto;
-    max-height: 20rem;
-  }
-
-  .thinking-toggle {
-    width: 100%;
-    min-height: 3.1rem;
-    padding: 0.9rem 1rem;
-    border: 0;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    color: inherit;
-  }
-
-  .thinking-label {
-    display: grid;
-    gap: 0.25rem;
-    text-align: left;
-    min-width: 0;
-  }
-
-  .thinking-label-copy {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .arrow {
-    width: 1.7rem;
-    height: 1.7rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--surface-strong);
+  .turn-status {
+    min-height: 1.9rem;
+    padding: 0 0.7rem;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    font-size: 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    white-space: nowrap;
+  }
+
+  .turn-card[data-state="running"] .turn-status,
+  .turn-card[data-state="stopping"] .turn-status {
     color: var(--text);
-    flex: none;
-    transition: transform 180ms ease;
+    background: var(--accent-soft);
   }
 
-  .thinking-toggle.open .arrow {
-    transform: rotate(45deg);
+  .turn-card[data-state="completed"] .turn-status {
+    color: var(--success);
+    background: rgba(234, 245, 239, 0.9);
   }
 
-  .thinking-content {
+  .turn-card[data-state="failed"] .turn-status,
+  .turn-card[data-state="interrupted"] .turn-status {
+    color: var(--danger);
+    background: rgba(255, 244, 242, 0.95);
+  }
+
+  .turn-prompt {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.68;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .turn-body {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1rem 1.05rem 1.05rem;
+  }
+
+  .turn-card.is-active .turn-body {
+    max-height: min(54vh, 30rem);
+    overflow-y: auto;
+  }
+
+  .turn-answer {
+    min-height: 1.5rem;
+    font-size: 0.97rem;
+    line-height: 1.74;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .turn-answer-placeholder {
+    color: var(--text-soft);
+    font-size: 0.84rem;
+    line-height: 1.7;
+  }
+
+  .turn-answer.has-content + .turn-answer-placeholder {
     display: none;
   }
 
-  .thinking-content.open {
-    display: block;
+  .turn-inline-error {
+    margin-top: 0.85rem;
+    padding: 0.85rem 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(157, 61, 61, 0.14);
+    background: rgba(255, 241, 239, 0.95);
+    color: #7a1e1e;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
   }
 
-  .cmd-status {
-    padding: 0 1rem 0.85rem;
-    font-size: 0.76rem;
+  .turn-details {
+    border-top: 1px solid var(--line);
+    padding-top: 0.7rem;
+  }
+
+  .turn-details.is-empty {
+    display: none;
+  }
+
+  .turn-details summary {
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    list-style: none;
+    user-select: none;
+    font-size: 0.86rem;
+    color: var(--text-muted);
+  }
+
+  .turn-details summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .turn-details-meta {
+    font-size: 0.74rem;
+    color: var(--text-soft);
+    font-family: var(--mono);
+  }
+
+  .turn-log-stack {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .log-section {
+    border: 1px solid var(--line);
+    border-radius: 1.1rem;
+    background: var(--surface-muted);
+    overflow: hidden;
+  }
+
+  .log-section-head {
+    padding: 0.85rem 0.95rem 0.75rem;
+    display: grid;
+    gap: 0.22rem;
+  }
+
+  .log-kind {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--text-soft);
   }
 
-  .cmd-status.success {
+  .log-meta {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .log-body {
+    padding: 0.85rem 0.95rem 0.95rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.77rem;
+    line-height: 1.72;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+    font-family: var(--mono);
+    background: rgba(255, 255, 255, 0.34);
+  }
+
+  .log-footer {
+    padding: 0 0.95rem 0.85rem;
+    font-size: 0.75rem;
+    color: var(--text-soft);
+  }
+
+  .log-footer.success {
     color: var(--success);
   }
 
-  .cmd-status.failed {
+  .log-footer.failed {
     color: var(--danger);
   }
 
-  .approval-block {
-    align-self: flex-start;
-    width: min(100%, 42rem);
-    padding: 1rem;
-    border-radius: 1.5rem;
-    border: 1px solid rgba(143, 102, 50, 0.16);
+  .log-section.approval {
     background: rgba(250, 245, 235, 0.94);
-    box-shadow: var(--shadow);
-  }
-
-  .approval-heading {
-    display: grid;
-    gap: 0.3rem;
-    margin-bottom: 0.9rem;
-  }
-
-  .approval-title {
-    font-size: 1rem;
-    font-weight: 600;
-  }
-
-  .approval-block .detail {
-    margin-bottom: 0.9rem;
-    border-radius: 1rem;
+    border-color: rgba(143, 102, 50, 0.16);
   }
 
   .approval-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
+    margin-top: 0.85rem;
   }
 
   .approval-actions button {
@@ -604,6 +633,26 @@
     color: var(--danger);
     border-color: rgba(157, 61, 61, 0.16);
     background: rgba(255, 250, 249, 0.82);
+  }
+
+  .msg.system {
+    align-self: center;
+    max-width: 100%;
+    padding: 0.1rem 0;
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 0.76rem;
+    box-shadow: none;
+  }
+
+  .msg.error {
+    padding: 0.85rem 0.95rem;
+    border-radius: 1.2rem;
+    background: rgba(255, 241, 239, 0.95);
+    border: 1px solid rgba(157, 61, 61, 0.14);
+    color: #7a1e1e;
+    font-size: 0.88rem;
+    line-height: 1.6;
   }
 
   .composer-shell {
@@ -690,7 +739,8 @@
 
     .topbar,
     .session-strip,
-    .composer-shell {
+    .composer-shell,
+    .turn-card {
       border-radius: 1.45rem;
     }
 
@@ -703,14 +753,6 @@
     .header-actions {
       width: 100%;
       justify-content: space-between;
-    }
-
-    .msg,
-    .activity-card,
-    .thinking-block,
-    .approval-block {
-      width: 100%;
-      max-width: 100%;
     }
 
     .composer-shell {
@@ -760,7 +802,7 @@
     <div class="session-meta">
       <div class="meta-block">
         <p class="meta-label">Session</p>
-        <p class="meta-value">Clean chat first, work logs only when needed.</p>
+        <p class="meta-value">One prompt, one response block, expandable work log.</p>
       </div>
       <span class="thread-pill" id="threadId">new session</span>
     </div>
@@ -782,10 +824,10 @@
 
   <main class="conversation">
     <section class="intro" id="intro">
-      <p class="intro-kicker">Minimal Mobile Interface</p>
-      <h2>Talk to Codex without the terminal noise.</h2>
+      <p class="intro-kicker">Turn Blocks</p>
+      <h2>Each prompt stays anchored while Codex streams underneath.</h2>
       <p class="intro-copy">
-        Start a turn, read the final answer as the main conversation, and expand the work log only when you want to inspect commands, diffs, or reasoning.
+        Send a prompt and watch one dedicated response block grow in place. Final output stays readable first, while commands, diffs, approvals, and reasoning live in a folded work log.
       </p>
     </section>
 
@@ -821,7 +863,11 @@ let ws = null;
 let currentThreadId = null;
 let currentTurnId = null;
 let turnActive = false;
-const activeItems = {};
+let pendingTurnBlock = null;
+let activeTurnId = null;
+
+const turnBlocks = new Map();
+const activeItems = new Map();
 
 function setStatus(state, label) {
   statusChipEl.dataset.state = state;
@@ -837,6 +883,10 @@ function formatThreadId(threadId) {
   return threadId.length > 20 ? `${threadId.slice(0, 20)}...` : threadId;
 }
 
+function updateThreadBadge(threadId) {
+  threadIdEl.textContent = formatThreadId(threadId);
+}
+
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
   ws = new WebSocket(`${proto}//${location.host}/ws`);
@@ -849,6 +899,7 @@ function connect() {
   ws.onclose = () => {
     setStatus('offline', 'Reconnecting');
     sendBtn.disabled = true;
+    finalizeActiveTurnOnDisconnect();
     setTurnActive(false);
     addSystemMsg('Connection lost. Reconnecting…');
     setTimeout(connect, 2000);
@@ -870,9 +921,7 @@ function handleMessage(msg) {
       break;
 
     case 'turn_started':
-      currentThreadId = msg.thread_id;
-      currentTurnId = msg.turn_id;
-      threadIdEl.textContent = formatThreadId(msg.thread_id);
+      bindPendingBlockToTurn(msg.thread_id, msg.turn_id);
       setTurnActive(true);
       break;
 
@@ -893,169 +942,318 @@ function handleMessage(msg) {
       break;
 
     case 'turn_completed':
+      completeTurn(msg.status, msg.error);
       setTurnActive(false);
       sendBtn.disabled = false;
-      if (msg.status === 'failed' && msg.error) {
-        const errMsg = msg.error.message || msg.error.additionalDetails || JSON.stringify(msg.error);
-        addErrorMsg(`Turn failed: ${errMsg}`);
-      }
       break;
 
     case 'error':
+      failCurrentTurn(msg.error);
       setTurnActive(false);
       sendBtn.disabled = false;
-      addErrorMsg(msg.error);
       break;
 
     case 'disconnected':
       setStatus('offline', 'Codex offline');
       sendBtn.disabled = true;
+      finalizeActiveTurnOnDisconnect();
       setTurnActive(false);
       addSystemMsg('Codex server disconnected.');
       break;
   }
 }
 
-function createActivityCard(itemId, label, meta) {
-  const el = document.createElement('div');
-  el.className = 'activity-card';
-  el.id = `item-${itemId}`;
-  el.innerHTML = `
-    <div class="activity-summary">
-      <div class="activity-label">${escapeHtml(label)}</div>
-      <div class="activity-meta">${escapeHtml(meta || '')}</div>
+function createTurnBlock(promptText) {
+  const root = document.createElement('article');
+  root.className = 'turn-card is-active';
+  root.dataset.state = 'pending';
+  root.innerHTML = `
+    <div class="turn-head">
+      <div class="turn-head-row">
+        <span class="turn-label">Prompt</span>
+        <span class="turn-status">Waiting to start</span>
+      </div>
+      <p class="turn-prompt">${escapeHtml(promptText)}</p>
     </div>
-    <div class="activity-body"></div>
+    <div class="turn-body">
+      <div class="turn-answer-wrap">
+        <div class="turn-answer"></div>
+        <div class="turn-answer-placeholder">Preparing a response…</div>
+      </div>
+      <details class="turn-details is-empty">
+        <summary>
+          <span>Work log</span>
+          <span class="turn-details-meta">0 sections</span>
+        </summary>
+        <div class="turn-log-stack"></div>
+      </details>
+    </div>
   `;
-  messagesEl.appendChild(el);
-  return el;
+
+  const block = {
+    root,
+    promptText,
+    turnId: null,
+    threadId: null,
+    logCount: 0,
+    statusEl: root.querySelector('.turn-status'),
+    answerEl: root.querySelector('.turn-answer'),
+    placeholderEl: root.querySelector('.turn-answer-placeholder'),
+    bodyEl: root.querySelector('.turn-body'),
+    detailsEl: root.querySelector('.turn-details'),
+    detailsMetaEl: root.querySelector('.turn-details-meta'),
+    logStackEl: root.querySelector('.turn-log-stack'),
+  };
+
+  messagesEl.appendChild(root);
+  scrollToLatest(block);
+  return block;
+}
+
+function createPendingTurnBlock(promptText) {
+  hideIntro();
+  const block = createTurnBlock(promptText);
+  pendingTurnBlock = block;
+  return block;
+}
+
+function bindPendingBlockToTurn(threadId, turnId) {
+  const block = pendingTurnBlock || createTurnBlock('');
+  block.turnId = turnId;
+  block.threadId = threadId;
+  currentThreadId = threadId;
+  currentTurnId = turnId;
+  activeTurnId = turnId;
+  pendingTurnBlock = null;
+  turnBlocks.set(turnId, block);
+  updateThreadBadge(threadId);
+  updateTurnBlockState(block, 'running', 'Streaming');
+}
+
+function getCurrentTurnBlock() {
+  if (activeTurnId && turnBlocks.has(activeTurnId)) {
+    return turnBlocks.get(activeTurnId);
+  }
+  return pendingTurnBlock;
+}
+
+function updateTurnBlockState(block, state, label) {
+  if (!block) return;
+  block.root.dataset.state = state;
+  block.statusEl.textContent = label;
+}
+
+function setTurnActive(active) {
+  turnActive = active;
+  stopBtn.classList.toggle('visible', active);
+  if (!active) {
+    currentTurnId = null;
+  }
+  if (statusChipEl.dataset.state !== 'offline') {
+    setStatus(active ? 'working' : 'ready', active ? 'Working' : 'Ready');
+  }
+}
+
+function revealAnswer(block) {
+  if (!block) return;
+  block.answerEl.classList.add('has-content');
+}
+
+function appendAnswer(block, content) {
+  if (!block) return;
+  revealAnswer(block);
+  block.answerEl.textContent += content;
+}
+
+function setInlineError(block, text) {
+  if (!block) {
+    addGlobalError(text);
+    return;
+  }
+
+  let errorEl = block.root.querySelector('.turn-inline-error');
+  if (!errorEl) {
+    errorEl = document.createElement('div');
+    errorEl.className = 'turn-inline-error';
+    block.bodyEl.appendChild(errorEl);
+  }
+  errorEl.textContent = text;
+  scrollToLatest(block);
+}
+
+function ensureLogContainer(block, open = false) {
+  if (!block) return;
+  block.detailsEl.classList.remove('is-empty');
+  block.detailsMetaEl.textContent = `${block.logCount} section${block.logCount === 1 ? '' : 's'}`;
+  if (open) block.detailsEl.open = true;
+}
+
+function addLogSection(block, kind, meta, options = {}) {
+  if (!block) return null;
+
+  block.logCount += 1;
+  ensureLogContainer(block, options.open === true);
+  block.detailsMetaEl.textContent = `${block.logCount} section${block.logCount === 1 ? '' : 's'}`;
+
+  const section = document.createElement('section');
+  section.className = `log-section ${kind}`;
+
+  const head = document.createElement('div');
+  head.className = 'log-section-head';
+
+  const labelEl = document.createElement('div');
+  labelEl.className = 'log-kind';
+  labelEl.textContent = options.label || kind;
+
+  const metaEl = document.createElement('div');
+  metaEl.className = 'log-meta';
+  metaEl.textContent = meta || '';
+
+  head.appendChild(labelEl);
+  head.appendChild(metaEl);
+  section.appendChild(head);
+
+  let bodyEl = null;
+  if (!options.skipBody) {
+    bodyEl = document.createElement('div');
+    bodyEl.className = 'log-body';
+    if (options.body) bodyEl.textContent = options.body;
+    section.appendChild(bodyEl);
+  }
+
+  let footerEl = null;
+  if (options.footer) {
+    footerEl = document.createElement('div');
+    footerEl.className = 'log-footer';
+    footerEl.textContent = options.footer;
+    section.appendChild(footerEl);
+  }
+
+  block.logStackEl.appendChild(section);
+  scrollToLatest(block);
+
+  return { section, bodyEl, metaEl, footerEl };
 }
 
 function onItemStarted(itemId, itemType, item) {
-  let el;
+  const block = getCurrentTurnBlock();
+  if (!block) return;
+
+  let entry = null;
 
   switch (itemType) {
     case 'userMessage':
       return;
-    case 'reasoning':
-      hideIntro();
-      el = createThinkingBlock(itemId);
-      break;
     case 'agentMessage':
-      hideIntro();
-      el = document.createElement('div');
-      el.className = 'msg assistant';
-      el.id = `item-${itemId}`;
-      el.textContent = '';
-      messagesEl.appendChild(el);
+      entry = { kind: 'answer', block };
       break;
-    case 'commandExecution':
-      hideIntro();
-      el = createCmdBlock(itemId, item);
+    case 'reasoning':
+      entry = {
+        kind: 'reasoning',
+        block,
+        ...addLogSection(block, 'reasoning', 'Background analysis', { label: 'Reasoning' }),
+      };
       break;
-    case 'fileChange':
-      hideIntro();
-      el = createFileBlock(itemId, item);
+    case 'commandExecution': {
+      const cmd = Array.isArray(item.command) ? item.command.join(' ') : (item.command || '$ ...');
+      entry = {
+        kind: 'commandExecution',
+        block,
+        ...addLogSection(block, 'command', cmd, {
+          label: 'Command',
+          footer: 'running…',
+        }),
+      };
       break;
+    }
+    case 'fileChange': {
+      const label = item && item.path ? item.path : 'Pending edit';
+      entry = {
+        kind: 'fileChange',
+        block,
+        ...addLogSection(block, 'file-change', label, {
+          label: 'File change',
+        }),
+      };
+      break;
+    }
     case 'plan':
-      hideIntro();
-      el = createActivityCard(itemId, 'Plan', 'Live update');
+      entry = {
+        kind: 'plan',
+        block,
+        ...addLogSection(block, 'plan', 'Live update', { label: 'Plan' }),
+      };
       break;
     default:
       return;
   }
 
-  activeItems[itemId] = el;
-  scrollBottom();
+  activeItems.set(itemId, entry);
 }
 
 function onDelta(itemId, deltaType, content) {
-  const el = activeItems[itemId];
-  if (!el) return;
+  const entry = activeItems.get(itemId);
+  if (!entry) return;
 
   switch (deltaType) {
     case 'agentMessage':
-      el.textContent += content;
+      appendAnswer(entry.block, content);
       break;
-    case 'plan': {
-      const bodyEl = el.querySelector('.activity-body');
-      if (bodyEl) bodyEl.textContent += content;
+    case 'reasoning':
+    case 'commandOutput':
+    case 'fileChange':
+    case 'plan':
+      if (entry.bodyEl) entry.bodyEl.textContent += content;
       break;
-    }
-    case 'reasoning': {
-      const contentEl = el.querySelector('.thinking-content');
-      if (contentEl) contentEl.textContent += content;
-      break;
-    }
-    case 'commandOutput': {
-      const outputEl = el.querySelector('.activity-body');
-      if (outputEl) outputEl.textContent += content;
-      break;
-    }
-    case 'fileChange': {
-      const diffEl = el.querySelector('.activity-body');
-      if (diffEl) diffEl.textContent += content;
-      break;
-    }
   }
 
-  scrollBottom();
+  scrollToLatest(entry.block);
 }
 
 function onItemCompleted(itemId, itemType, item) {
-  const el = activeItems[itemId];
-  if (!el) return;
+  const entry = activeItems.get(itemId);
+  if (!entry) return;
 
-  if (itemType === 'commandExecution') {
-    const statusEl = el.querySelector('.cmd-status');
-    if (statusEl) {
-      const exitCode = item.exitCode;
-      const duration = item.durationMs;
-      const status = item.status || 'completed';
-      if (status === 'completed' && (exitCode === 0 || exitCode === undefined)) {
-        statusEl.className = 'cmd-status success';
-        statusEl.textContent = `exit ${exitCode ?? 0}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
-      } else if (status === 'declined') {
-        statusEl.className = 'cmd-status failed';
-        statusEl.textContent = 'declined';
-      } else {
-        statusEl.className = 'cmd-status failed';
-        statusEl.textContent = `exit ${exitCode ?? '?'}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
-      }
+  if (itemType === 'commandExecution' && entry.footerEl) {
+    const exitCode = item.exitCode;
+    const duration = item.durationMs;
+    const status = item.status || 'completed';
+    if (status === 'completed' && (exitCode === 0 || exitCode === undefined)) {
+      entry.footerEl.className = 'log-footer success';
+      entry.footerEl.textContent = `exit ${exitCode ?? 0}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
+    } else if (status === 'declined') {
+      entry.footerEl.className = 'log-footer failed';
+      entry.footerEl.textContent = 'declined';
+    } else {
+      entry.footerEl.className = 'log-footer failed';
+      entry.footerEl.textContent = `exit ${exitCode ?? '?'}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
     }
   }
 
   if (itemType === 'fileChange' && item.changes && Array.isArray(item.changes)) {
-    const bodyEl = el.querySelector('.activity-body');
-    const metaEl = el.querySelector('.activity-meta');
-    if (bodyEl && !bodyEl.textContent.trim()) {
-      bodyEl.textContent = item.changes.map((change) =>
+    if (entry.bodyEl && !entry.bodyEl.textContent.trim()) {
+      entry.bodyEl.textContent = item.changes.map((change) =>
         `${change.kind}: ${change.path}\n${change.diff || ''}`
       ).join('\n\n');
     }
-    if (metaEl) {
-      metaEl.textContent = item.changes.map((change) => change.path).join(', ');
+    if (entry.metaEl) {
+      entry.metaEl.textContent = item.changes.map((change) => change.path).join(', ');
     }
   }
 
-  if (itemType === 'reasoning') {
-    const summaryEl = el.querySelector('.thinking-label-copy');
-    if (summaryEl) {
-      const summary = item.summary || '';
-      summaryEl.textContent = summary
-        ? summary.slice(0, 80) + (summary.length > 80 ? '…' : '')
-        : 'Background analysis is available if you want to inspect it.';
-    }
+  if (itemType === 'reasoning' && entry.metaEl) {
+    const summary = item.summary || '';
+    entry.metaEl.textContent = summary
+      ? summary.slice(0, 80) + (summary.length > 80 ? '…' : '')
+      : 'Background analysis';
   }
 
-  delete activeItems[itemId];
+  activeItems.delete(itemId);
 }
 
 function onApprovalRequest(requestId, method, detail) {
-  hideIntro();
-
-  const el = document.createElement('div');
-  el.className = 'approval-block';
+  const block = getCurrentTurnBlock();
+  if (!block) return;
 
   let description = '';
   let title = 'Permission required';
@@ -1075,27 +1273,104 @@ function onApprovalRequest(requestId, method, detail) {
     description = JSON.stringify(detail, null, 2);
   }
 
-  el.innerHTML = `
-    <div class="approval-heading">
-      <div class="approval-label">Approval</div>
-      <div class="approval-title">${escapeHtml(title)}</div>
-    </div>
-    <div class="detail">${escapeHtml(description)}</div>
-    <div class="approval-actions">
-      <button class="btn-accept" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'accept')">Approve once</button>
-      <button class="btn-secondary" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'acceptForSession')">Approve for session</button>
-      <button class="btn-decline" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'decline')">Decline</button>
-    </div>
+  const section = addLogSection(block, 'approval', title, {
+    label: 'Approval',
+    body: description,
+    open: true,
+  });
+
+  const actions = document.createElement('div');
+  actions.className = 'approval-actions';
+  actions.innerHTML = `
+    <button class="btn-accept" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'accept')">Approve once</button>
+    <button class="btn-secondary" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'acceptForSession')">Approve for session</button>
+    <button class="btn-decline" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'decline')">Decline</button>
   `;
 
-  messagesEl.appendChild(el);
-  scrollBottom();
+  if (section.bodyEl) {
+    section.bodyEl.appendChild(actions);
+  }
+
+  scrollToLatest(block);
+}
+
+function completeTurn(status, error) {
+  const block = getCurrentTurnBlock();
+  if (!block) return;
+
+  const normalized = normalizeTurnState(status);
+  updateTurnBlockState(block, normalized.state, normalized.label);
+  block.root.classList.remove('is-active');
+
+  if (normalized.state === 'failed' && error) {
+    const errMsg = error.message || error.additionalDetails || JSON.stringify(error);
+    setInlineError(block, `Turn failed: ${errMsg}`);
+  }
+
+  if (block.turnId) {
+    activeTurnId = null;
+  }
+  pendingTurnBlock = null;
+}
+
+function failCurrentTurn(errorText) {
+  const block = getCurrentTurnBlock();
+  if (!block) {
+    addGlobalError(errorText);
+    return;
+  }
+
+  updateTurnBlockState(block, 'failed', 'Failed');
+  setInlineError(block, errorText);
+  block.root.classList.remove('is-active');
+  activeTurnId = null;
+  pendingTurnBlock = null;
+}
+
+function finalizeActiveTurnOnDisconnect() {
+  const block = getCurrentTurnBlock();
+  if (!block) return;
+  updateTurnBlockState(block, 'interrupted', 'Disconnected');
+  setInlineError(block, 'Connection was lost before the turn finished.');
+  block.root.classList.remove('is-active');
+  activeTurnId = null;
+  pendingTurnBlock = null;
+}
+
+function normalizeTurnState(status) {
+  switch (status) {
+    case 'completed':
+      return { state: 'completed', label: 'Completed' };
+    case 'failed':
+      return { state: 'failed', label: 'Failed' };
+    case 'cancelled':
+    case 'interrupted':
+    case 'aborted':
+      return { state: 'interrupted', label: 'Interrupted' };
+    default:
+      return { state: status || 'completed', label: status ? capitalize(status) : 'Completed' };
+  }
+}
+
+function capitalize(text) {
+  return text ? `${text[0].toUpperCase()}${text.slice(1)}` : '';
+}
+
+function stopTurn() {
+  if (!currentThreadId || !currentTurnId) return;
+  const block = getCurrentTurnBlock();
+  if (block) updateTurnBlockState(block, 'stopping', 'Stopping…');
+  ws.send(JSON.stringify({
+    type: 'interrupt',
+    thread_id: currentThreadId,
+    turn_id: currentTurnId,
+  }));
 }
 
 function sendApproval(btn, requestIdStr, decision) {
   const requestId = JSON.parse(requestIdStr);
-  const block = btn.closest('.approval-block');
-  const buttons = block.querySelectorAll('button');
+  const section = btn.closest('.log-section');
+  const buttons = section.querySelectorAll('button');
   buttons.forEach((button) => {
     button.disabled = true;
     if (button !== btn) button.style.opacity = '0.42';
@@ -1108,72 +1383,11 @@ function sendApproval(btn, requestIdStr, decision) {
   }));
 }
 
-function createThinkingBlock(itemId) {
-  const el = document.createElement('div');
-  el.className = 'thinking-block';
-  el.id = `item-${itemId}`;
-  el.innerHTML = `
-    <button class="thinking-toggle" type="button" aria-expanded="false" onclick="toggleThinking(this)">
-      <span class="thinking-label">
-        <span class="thinking-label-title">Analysis</span>
-        <span class="thinking-label-copy">Background analysis is hidden by default.</span>
-      </span>
-      <span class="arrow">+</span>
-    </button>
-    <div class="thinking-content"></div>
-  `;
-  messagesEl.appendChild(el);
-  return el;
-}
-
-function toggleThinking(button) {
-  const isOpen = !button.classList.contains('open');
-  button.classList.toggle('open', isOpen);
-  button.setAttribute('aria-expanded', String(isOpen));
-  button.nextElementSibling.classList.toggle('open', isOpen);
-}
-
-function createCmdBlock(itemId, item) {
-  const cmd = Array.isArray(item.command) ? item.command.join(' ') : (item.command || '$ ...');
-  const el = createActivityCard(itemId, 'Command', cmd);
-  const status = document.createElement('div');
-  status.className = 'cmd-status';
-  status.textContent = 'running…';
-  el.appendChild(status);
-  return el;
-}
-
-function createFileBlock(itemId, item) {
-  const label = item && item.path ? item.path : 'Pending edit';
-  return createActivityCard(itemId, 'File change', label);
-}
-
-function setTurnActive(active) {
-  turnActive = active;
-  stopBtn.classList.toggle('visible', active);
-  if (!active) {
-    currentTurnId = null;
-  }
-  if (statusChipEl.dataset.state !== 'offline') {
-    setStatus(active ? 'working' : 'ready', active ? 'Working' : 'Ready');
-  }
-}
-
-function stopTurn() {
-  if (!currentThreadId || !currentTurnId) return;
-  ws.send(JSON.stringify({
-    type: 'interrupt',
-    thread_id: currentThreadId,
-    turn_id: currentTurnId,
-  }));
-}
-
 function sendMessage() {
   const text = promptEl.value.trim();
   if (!text || turnActive || !ws || ws.readyState !== WebSocket.OPEN) return;
 
-  hideIntro();
-  addUserMsg(text);
+  createPendingTurnBlock(text);
   promptEl.value = '';
   autoResize();
 
@@ -1195,32 +1409,27 @@ function sendMessage() {
   sendBtn.disabled = true;
 }
 
-function addUserMsg(text) {
-  const div = document.createElement('div');
-  div.className = 'msg user';
-  div.textContent = text;
-  messagesEl.appendChild(div);
-  scrollBottom();
-}
-
 function addSystemMsg(text) {
   const div = document.createElement('div');
   div.className = 'msg system';
   div.textContent = text;
   messagesEl.appendChild(div);
-  scrollBottom();
+  scrollToLatest();
 }
 
-function addErrorMsg(text) {
+function addGlobalError(text) {
   hideIntro();
   const div = document.createElement('div');
   div.className = 'msg error';
   div.textContent = text;
   messagesEl.appendChild(div);
-  scrollBottom();
+  scrollToLatest();
 }
 
-function scrollBottom() {
+function scrollToLatest(block = null) {
+  if (block && block.root.classList.contains('is-active')) {
+    block.bodyEl.scrollTop = block.bodyEl.scrollHeight;
+  }
   messagesEl.scrollTop = messagesEl.scrollHeight;
 }
 
