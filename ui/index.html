@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Codex RC</title>
+<style>
+  :root {
+    --bg: #f2eee7;
+    --bg-accent: rgba(188, 180, 166, 0.22);
+    --surface: rgba(255, 252, 247, 0.72);
+    --surface-strong: rgba(255, 255, 255, 0.88);
+    --surface-muted: rgba(255, 255, 255, 0.58);
+    --line: rgba(28, 28, 28, 0.08);
+    --line-strong: rgba(28, 28, 28, 0.14);
+    --text: #181818;
+    --text-muted: #6e6a64;
+    --text-soft: #8c877f;
+    --accent: #151515;
+    --accent-soft: #e7e0d5;
+    --success: #2f6d54;
+    --danger: #9d3d3d;
+    --warning: #8f6632;
+    --shadow: 0 20px 48px rgba(36, 30, 24, 0.08);
+    --mono: "SF Mono", "IBM Plex Mono", "Cascadia Code", monospace;
+    --sans: "Avenir Next", "Segoe UI", sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    color: var(--text);
+    font-family: var(--sans);
+    background:
+      radial-gradient(circle at top left, var(--bg-accent), transparent 34rem),
+      linear-gradient(180deg, #f7f3ec 0%, var(--bg) 100%);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 10rem),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.25), transparent 22rem);
+    pointer-events: none;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .app-shell {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 54rem);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: 1rem 0.875rem 1.25rem;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.875rem;
+  }
+
+  .topbar,
+  .session-strip,
+  .composer-shell {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow);
+  }
+
+  .topbar {
+    border-radius: 1.75rem;
+    padding: 1rem 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-width: 0;
+  }
+
+  .brand-mark {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 0.35rem rgba(21, 21, 21, 0.08);
+    flex: none;
+  }
+
+  .brand-copy {
+    min-width: 0;
+  }
+
+  .brand-copy p {
+    margin: 0 0 0.2rem;
+    color: var(--text-soft);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .brand-copy h1 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .status-chip {
+    min-height: 2.75rem;
+    padding: 0 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  .status-chip[data-state="ready"],
+  .status-chip[data-state="working"] {
+    color: var(--text);
+  }
+
+  .status-chip[data-state="offline"] {
+    color: var(--danger);
+  }
+
+  .status-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--text-soft);
+    transition: transform 180ms ease, background-color 180ms ease;
+  }
+
+  .status-chip[data-state="connected"] .status-dot {
+    background: #6f8f84;
+  }
+
+  .status-chip[data-state="ready"] .status-dot {
+    background: var(--success);
+  }
+
+  .status-chip[data-state="working"] .status-dot {
+    background: var(--accent);
+    transform: scale(1.2);
+  }
+
+  .status-chip[data-state="offline"] .status-dot {
+    background: var(--danger);
+  }
+
+  #stopBtn {
+    display: none;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid rgba(157, 61, 61, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 246, 244, 0.9);
+    color: var(--danger);
+  }
+
+  #stopBtn.visible {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .session-strip {
+    border-radius: 1.5rem;
+    padding: 1rem 1.125rem;
+    display: grid;
+    gap: 0.875rem;
+  }
+
+  .session-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .meta-block {
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .meta-label {
+    margin: 0;
+    color: var(--text-soft);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .meta-value {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+  }
+
+  .thread-pill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+  }
+
+  .session-panel {
+    border-top: 1px solid var(--line);
+    padding-top: 0.85rem;
+  }
+
+  .session-panel summary {
+    min-height: 2.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    list-style: none;
+    user-select: none;
+  }
+
+  .session-panel summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .session-panel summary::after {
+    content: "+";
+    width: 1.65rem;
+    height: 1.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--text);
+    font-size: 1rem;
+    transition: transform 180ms ease;
+    flex: none;
+  }
+
+  .session-panel[open] summary::after {
+    transform: rotate(45deg);
+  }
+
+  .options-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .options-grid label {
+    display: grid;
+    gap: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+  }
+
+  .options-grid input {
+    min-height: 2.9rem;
+    padding: 0 0.95rem;
+    border-radius: 1rem;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--text);
+    outline: none;
+  }
+
+  .options-grid input:focus,
+  #prompt:focus,
+  #send:focus-visible,
+  .approval-actions button:focus-visible,
+  .thinking-toggle:focus-visible,
+  .session-panel summary:focus-visible,
+  #stopBtn:focus-visible {
+    outline: 2px solid rgba(21, 21, 21, 0.18);
+    outline-offset: 2px;
+  }
+
+  .conversation {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .intro {
+    border: 1px solid var(--line);
+    border-radius: 1.85rem;
+    padding: 1.5rem 1.4rem;
+    background: var(--surface);
+    backdrop-filter: blur(18px);
+    box-shadow: var(--shadow);
+  }
+
+  .intro.hidden {
+    display: none;
+  }
+
+  .intro p {
+    margin: 0;
+  }
+
+  .intro-kicker {
+    color: var(--text-soft);
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .intro h2 {
+    margin: 0.6rem 0;
+    font-family: var(--serif);
+    font-size: clamp(1.9rem, 5vw, 2.75rem);
+    line-height: 1.02;
+    font-weight: 400;
+  }
+
+  .intro-copy {
+    max-width: 34rem;
+    color: var(--text-muted);
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .messages {
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-bottom: 0.15rem;
+    scroll-padding-bottom: 6rem;
+  }
+
+  .msg,
+  .activity-card,
+  .thinking-block,
+  .approval-block {
+    animation: rise 180ms ease;
+  }
+
+  .msg {
+    max-width: min(100%, 42rem);
+    padding: 1rem 1.05rem;
+    border-radius: 1.5rem;
+    line-height: 1.68;
+    font-size: 0.97rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-shadow: var(--shadow);
+  }
+
+  .msg.user {
+    margin-left: auto;
+    background: var(--accent);
+    color: #fff;
+    border-top-right-radius: 0.55rem;
+  }
+
+  .msg.assistant {
+    background: var(--surface-strong);
+    border: 1px solid var(--line);
+    border-top-left-radius: 0.55rem;
+  }
+
+  .msg.system {
+    align-self: center;
+    max-width: 100%;
+    padding: 0.15rem 0;
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 0.76rem;
+    box-shadow: none;
+  }
+
+  .msg.error {
+    background: rgba(255, 241, 239, 0.95);
+    border: 1px solid rgba(157, 61, 61, 0.14);
+    color: #7a1e1e;
+  }
+
+  .activity-card,
+  .thinking-block {
+    align-self: flex-start;
+    width: min(100%, 42rem);
+    border: 1px solid var(--line);
+    border-radius: 1.35rem;
+    background: var(--surface-muted);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .activity-summary {
+    padding: 0.9rem 1rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .activity-label,
+  .thinking-label-title,
+  .approval-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  .activity-meta,
+  .thinking-label-copy {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+  }
+
+  .activity-meta {
+    font-family: var(--mono);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .activity-body,
+  .thinking-content,
+  .approval-block .detail {
+    padding: 0.95rem 1rem 1rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 0.77rem;
+    line-height: 1.72;
+    white-space: pre-wrap;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.34);
+    overflow: auto;
+    max-height: 20rem;
+  }
+
+  .thinking-toggle {
+    width: 100%;
+    min-height: 3.1rem;
+    padding: 0.9rem 1rem;
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: inherit;
+  }
+
+  .thinking-label {
+    display: grid;
+    gap: 0.25rem;
+    text-align: left;
+    min-width: 0;
+  }
+
+  .thinking-label-copy {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .arrow {
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: var(--text);
+    flex: none;
+    transition: transform 180ms ease;
+  }
+
+  .thinking-toggle.open .arrow {
+    transform: rotate(45deg);
+  }
+
+  .thinking-content {
+    display: none;
+  }
+
+  .thinking-content.open {
+    display: block;
+  }
+
+  .cmd-status {
+    padding: 0 1rem 0.85rem;
+    font-size: 0.76rem;
+    color: var(--text-soft);
+  }
+
+  .cmd-status.success {
+    color: var(--success);
+  }
+
+  .cmd-status.failed {
+    color: var(--danger);
+  }
+
+  .approval-block {
+    align-self: flex-start;
+    width: min(100%, 42rem);
+    padding: 1rem;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(143, 102, 50, 0.16);
+    background: rgba(250, 245, 235, 0.94);
+    box-shadow: var(--shadow);
+  }
+
+  .approval-heading {
+    display: grid;
+    gap: 0.3rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .approval-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .approval-block .detail {
+    margin-bottom: 0.9rem;
+    border-radius: 1rem;
+  }
+
+  .approval-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .approval-actions button {
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface-strong);
+    color: var(--text);
+  }
+
+  .btn-accept {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: transparent;
+  }
+
+  .btn-decline {
+    color: var(--danger);
+    border-color: rgba(157, 61, 61, 0.16);
+    background: rgba(255, 250, 249, 0.82);
+  }
+
+  .composer-shell {
+    position: sticky;
+    bottom: 0.75rem;
+    border-radius: 1.75rem;
+    padding: 0.9rem;
+  }
+
+  .composer {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  #prompt {
+    min-height: 3.5rem;
+    max-height: 9rem;
+    padding: 0.95rem 1rem;
+    border-radius: 1.35rem;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.55;
+    resize: none;
+    outline: none;
+  }
+
+  #prompt::placeholder {
+    color: var(--text-soft);
+  }
+
+  #send {
+    width: 3.5rem;
+    min-height: 3.5rem;
+    border: 0;
+    border-radius: 1.25rem;
+    background: var(--accent);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+
+  #send:disabled {
+    opacity: 0.34;
+    transform: none;
+    cursor: not-allowed;
+  }
+
+  #send svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: currentColor;
+  }
+
+  .composer-hint {
+    margin: 0.65rem 0.15rem 0;
+    color: var(--text-soft);
+    font-size: 0.76rem;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(0.4rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .app-shell {
+      width: 100%;
+      padding: 0.75rem;
+      gap: 0.75rem;
+    }
+
+    .topbar,
+    .session-strip,
+    .composer-shell {
+      border-radius: 1.45rem;
+    }
+
+    .topbar {
+      padding: 0.95rem 1rem;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .msg,
+    .activity-card,
+    .thinking-block,
+    .approval-block {
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .composer-shell {
+      bottom: 0;
+    }
+
+    .composer {
+      grid-template-columns: 1fr;
+    }
+
+    #send {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-copy">
+        <p>Remote Control</p>
+        <h1>Codex RC</h1>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="status-chip" id="statusChip" data-state="connecting">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusLabel">Connecting</span>
+      </div>
+      <button id="stopBtn" type="button" onclick="stopTurn()">Stop</button>
+    </div>
+  </header>
+
+  <section class="session-strip">
+    <div class="session-meta">
+      <div class="meta-block">
+        <p class="meta-label">Session</p>
+        <p class="meta-value">Clean chat first, work logs only when needed.</p>
+      </div>
+      <span class="thread-pill" id="threadId">new session</span>
+    </div>
+
+    <details class="session-panel">
+      <summary>Session options</summary>
+      <div class="options-grid">
+        <label>
+          <span>Working directory</span>
+          <input id="cwd" type="text" placeholder="Auto-detect current workspace">
+        </label>
+        <label>
+          <span>Model override</span>
+          <input id="model" type="text" placeholder="Use default model">
+        </label>
+      </div>
+    </details>
+  </section>
+
+  <main class="conversation">
+    <section class="intro" id="intro">
+      <p class="intro-kicker">Minimal Mobile Interface</p>
+      <h2>Talk to Codex without the terminal noise.</h2>
+      <p class="intro-copy">
+        Start a turn, read the final answer as the main conversation, and expand the work log only when you want to inspect commands, diffs, or reasoning.
+      </p>
+    </section>
+
+    <div id="messages" class="messages"></div>
+  </main>
+
+  <footer class="composer-shell">
+    <div class="composer">
+      <textarea id="prompt" rows="1" placeholder="Ask Codex to inspect, edit, or explain..." autofocus></textarea>
+      <button id="send" type="button" aria-label="Send message" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 12.75V11.25H16.88L11.2 5.56L12.25 4.5L19.75 12L12.25 19.5L11.2 18.44L16.88 12.75H4Z"/>
+        </svg>
+      </button>
+    </div>
+    <p class="composer-hint">Press Enter to send. Use Shift+Enter for a new line.</p>
+  </footer>
+</div>
+
+<script>
+const messagesEl = document.getElementById('messages');
+const introEl = document.getElementById('intro');
+const promptEl = document.getElementById('prompt');
+const sendBtn = document.getElementById('send');
+const statusChipEl = document.getElementById('statusChip');
+const statusLabelEl = document.getElementById('statusLabel');
+const threadIdEl = document.getElementById('threadId');
+const cwdEl = document.getElementById('cwd');
+const modelEl = document.getElementById('model');
+const stopBtn = document.getElementById('stopBtn');
+
+let ws = null;
+let currentThreadId = null;
+let currentTurnId = null;
+let turnActive = false;
+const activeItems = {};
+
+function setStatus(state, label) {
+  statusChipEl.dataset.state = state;
+  statusLabelEl.textContent = label;
+}
+
+function hideIntro() {
+  introEl.classList.add('hidden');
+}
+
+function formatThreadId(threadId) {
+  if (!threadId) return 'new session';
+  return threadId.length > 20 ? `${threadId.slice(0, 20)}...` : threadId;
+}
+
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}/ws`);
+  setStatus('connecting', 'Connecting');
+
+  ws.onopen = () => {
+    setStatus('connected', 'Connected');
+  };
+
+  ws.onclose = () => {
+    setStatus('offline', 'Reconnecting');
+    sendBtn.disabled = true;
+    setTurnActive(false);
+    addSystemMsg('Connection lost. Reconnecting…');
+    setTimeout(connect, 2000);
+  };
+
+  ws.onerror = () => ws.close();
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    handleMessage(msg);
+  };
+}
+
+function handleMessage(msg) {
+  switch (msg.type) {
+    case 'ready':
+      sendBtn.disabled = false;
+      if (!turnActive) setStatus('ready', 'Ready');
+      break;
+
+    case 'turn_started':
+      currentThreadId = msg.thread_id;
+      currentTurnId = msg.turn_id;
+      threadIdEl.textContent = formatThreadId(msg.thread_id);
+      setTurnActive(true);
+      break;
+
+    case 'item_started':
+      onItemStarted(msg.item_id, msg.item_type, msg.item);
+      break;
+
+    case 'delta':
+      onDelta(msg.item_id, msg.delta_type, msg.content);
+      break;
+
+    case 'item_completed':
+      onItemCompleted(msg.item_id, msg.item_type, msg.item);
+      break;
+
+    case 'approval_request':
+      onApprovalRequest(msg.request_id, msg.method, msg.detail);
+      break;
+
+    case 'turn_completed':
+      setTurnActive(false);
+      sendBtn.disabled = false;
+      if (msg.status === 'failed' && msg.error) {
+        const errMsg = msg.error.message || msg.error.additionalDetails || JSON.stringify(msg.error);
+        addErrorMsg(`Turn failed: ${errMsg}`);
+      }
+      break;
+
+    case 'error':
+      setTurnActive(false);
+      sendBtn.disabled = false;
+      addErrorMsg(msg.error);
+      break;
+
+    case 'disconnected':
+      setStatus('offline', 'Codex offline');
+      sendBtn.disabled = true;
+      setTurnActive(false);
+      addSystemMsg('Codex server disconnected.');
+      break;
+  }
+}
+
+function createActivityCard(itemId, label, meta) {
+  const el = document.createElement('div');
+  el.className = 'activity-card';
+  el.id = `item-${itemId}`;
+  el.innerHTML = `
+    <div class="activity-summary">
+      <div class="activity-label">${escapeHtml(label)}</div>
+      <div class="activity-meta">${escapeHtml(meta || '')}</div>
+    </div>
+    <div class="activity-body"></div>
+  `;
+  messagesEl.appendChild(el);
+  return el;
+}
+
+function onItemStarted(itemId, itemType, item) {
+  let el;
+
+  switch (itemType) {
+    case 'userMessage':
+      return;
+    case 'reasoning':
+      hideIntro();
+      el = createThinkingBlock(itemId);
+      break;
+    case 'agentMessage':
+      hideIntro();
+      el = document.createElement('div');
+      el.className = 'msg assistant';
+      el.id = `item-${itemId}`;
+      el.textContent = '';
+      messagesEl.appendChild(el);
+      break;
+    case 'commandExecution':
+      hideIntro();
+      el = createCmdBlock(itemId, item);
+      break;
+    case 'fileChange':
+      hideIntro();
+      el = createFileBlock(itemId, item);
+      break;
+    case 'plan':
+      hideIntro();
+      el = createActivityCard(itemId, 'Plan', 'Live update');
+      break;
+    default:
+      return;
+  }
+
+  activeItems[itemId] = el;
+  scrollBottom();
+}
+
+function onDelta(itemId, deltaType, content) {
+  const el = activeItems[itemId];
+  if (!el) return;
+
+  switch (deltaType) {
+    case 'agentMessage':
+      el.textContent += content;
+      break;
+    case 'plan': {
+      const bodyEl = el.querySelector('.activity-body');
+      if (bodyEl) bodyEl.textContent += content;
+      break;
+    }
+    case 'reasoning': {
+      const contentEl = el.querySelector('.thinking-content');
+      if (contentEl) contentEl.textContent += content;
+      break;
+    }
+    case 'commandOutput': {
+      const outputEl = el.querySelector('.activity-body');
+      if (outputEl) outputEl.textContent += content;
+      break;
+    }
+    case 'fileChange': {
+      const diffEl = el.querySelector('.activity-body');
+      if (diffEl) diffEl.textContent += content;
+      break;
+    }
+  }
+
+  scrollBottom();
+}
+
+function onItemCompleted(itemId, itemType, item) {
+  const el = activeItems[itemId];
+  if (!el) return;
+
+  if (itemType === 'commandExecution') {
+    const statusEl = el.querySelector('.cmd-status');
+    if (statusEl) {
+      const exitCode = item.exitCode;
+      const duration = item.durationMs;
+      const status = item.status || 'completed';
+      if (status === 'completed' && (exitCode === 0 || exitCode === undefined)) {
+        statusEl.className = 'cmd-status success';
+        statusEl.textContent = `exit ${exitCode ?? 0}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
+      } else if (status === 'declined') {
+        statusEl.className = 'cmd-status failed';
+        statusEl.textContent = 'declined';
+      } else {
+        statusEl.className = 'cmd-status failed';
+        statusEl.textContent = `exit ${exitCode ?? '?'}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
+      }
+    }
+  }
+
+  if (itemType === 'fileChange' && item.changes && Array.isArray(item.changes)) {
+    const bodyEl = el.querySelector('.activity-body');
+    const metaEl = el.querySelector('.activity-meta');
+    if (bodyEl && !bodyEl.textContent.trim()) {
+      bodyEl.textContent = item.changes.map((change) =>
+        `${change.kind}: ${change.path}\n${change.diff || ''}`
+      ).join('\n\n');
+    }
+    if (metaEl) {
+      metaEl.textContent = item.changes.map((change) => change.path).join(', ');
+    }
+  }
+
+  if (itemType === 'reasoning') {
+    const summaryEl = el.querySelector('.thinking-label-copy');
+    if (summaryEl) {
+      const summary = item.summary || '';
+      summaryEl.textContent = summary
+        ? summary.slice(0, 80) + (summary.length > 80 ? '…' : '')
+        : 'Background analysis is available if you want to inspect it.';
+    }
+  }
+
+  delete activeItems[itemId];
+}
+
+function onApprovalRequest(requestId, method, detail) {
+  hideIntro();
+
+  const el = document.createElement('div');
+  el.className = 'approval-block';
+
+  let description = '';
+  let title = 'Permission required';
+
+  if (method.includes('commandExecution')) {
+    const cmd = Array.isArray(detail.command) ? detail.command.join(' ') : (detail.command || '');
+    const cwd = detail.cwd || '';
+    title = 'Approve command execution';
+    description = `Command: ${cmd}${cwd ? `\nDirectory: ${cwd}` : ''}`;
+    if (detail.reason) description += `\nReason: ${detail.reason}`;
+  } else if (method.includes('fileChange')) {
+    title = 'Approve file change';
+    description = 'Codex wants to write files.';
+    if (detail.reason) description += `\nReason: ${detail.reason}`;
+    if (detail.grantRoot) description += `\nPath: ${detail.grantRoot}`;
+  } else {
+    description = JSON.stringify(detail, null, 2);
+  }
+
+  el.innerHTML = `
+    <div class="approval-heading">
+      <div class="approval-label">Approval</div>
+      <div class="approval-title">${escapeHtml(title)}</div>
+    </div>
+    <div class="detail">${escapeHtml(description)}</div>
+    <div class="approval-actions">
+      <button class="btn-accept" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'accept')">Approve once</button>
+      <button class="btn-secondary" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'acceptForSession')">Approve for session</button>
+      <button class="btn-decline" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'decline')">Decline</button>
+    </div>
+  `;
+
+  messagesEl.appendChild(el);
+  scrollBottom();
+}
+
+function sendApproval(btn, requestIdStr, decision) {
+  const requestId = JSON.parse(requestIdStr);
+  const block = btn.closest('.approval-block');
+  const buttons = block.querySelectorAll('button');
+  buttons.forEach((button) => {
+    button.disabled = true;
+    if (button !== btn) button.style.opacity = '0.42';
+  });
+
+  ws.send(JSON.stringify({
+    type: 'approval_response',
+    request_id: requestId,
+    decision,
+  }));
+}
+
+function createThinkingBlock(itemId) {
+  const el = document.createElement('div');
+  el.className = 'thinking-block';
+  el.id = `item-${itemId}`;
+  el.innerHTML = `
+    <button class="thinking-toggle" type="button" aria-expanded="false" onclick="toggleThinking(this)">
+      <span class="thinking-label">
+        <span class="thinking-label-title">Analysis</span>
+        <span class="thinking-label-copy">Background analysis is hidden by default.</span>
+      </span>
+      <span class="arrow">+</span>
+    </button>
+    <div class="thinking-content"></div>
+  `;
+  messagesEl.appendChild(el);
+  return el;
+}
+
+function toggleThinking(button) {
+  const isOpen = !button.classList.contains('open');
+  button.classList.toggle('open', isOpen);
+  button.setAttribute('aria-expanded', String(isOpen));
+  button.nextElementSibling.classList.toggle('open', isOpen);
+}
+
+function createCmdBlock(itemId, item) {
+  const cmd = Array.isArray(item.command) ? item.command.join(' ') : (item.command || '$ ...');
+  const el = createActivityCard(itemId, 'Command', cmd);
+  const status = document.createElement('div');
+  status.className = 'cmd-status';
+  status.textContent = 'running…';
+  el.appendChild(status);
+  return el;
+}
+
+function createFileBlock(itemId, item) {
+  const label = item && item.path ? item.path : 'Pending edit';
+  return createActivityCard(itemId, 'File change', label);
+}
+
+function setTurnActive(active) {
+  turnActive = active;
+  stopBtn.classList.toggle('visible', active);
+  if (!active) {
+    currentTurnId = null;
+  }
+  if (statusChipEl.dataset.state !== 'offline') {
+    setStatus(active ? 'working' : 'ready', active ? 'Working' : 'Ready');
+  }
+}
+
+function stopTurn() {
+  if (!currentThreadId || !currentTurnId) return;
+  ws.send(JSON.stringify({
+    type: 'interrupt',
+    thread_id: currentThreadId,
+    turn_id: currentTurnId,
+  }));
+}
+
+function sendMessage() {
+  const text = promptEl.value.trim();
+  if (!text || turnActive || !ws || ws.readyState !== WebSocket.OPEN) return;
+
+  hideIntro();
+  addUserMsg(text);
+  promptEl.value = '';
+  autoResize();
+
+  if (currentThreadId) {
+    ws.send(JSON.stringify({
+      type: 'reply',
+      thread_id: currentThreadId,
+      prompt: text,
+    }));
+  } else {
+    const msg = { type: 'start_turn', prompt: text };
+    const cwd = cwdEl.value.trim();
+    const model = modelEl.value.trim();
+    if (cwd) msg.cwd = cwd;
+    if (model) msg.model = model;
+    ws.send(JSON.stringify(msg));
+  }
+
+  sendBtn.disabled = true;
+}
+
+function addUserMsg(text) {
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.textContent = text;
+  messagesEl.appendChild(div);
+  scrollBottom();
+}
+
+function addSystemMsg(text) {
+  const div = document.createElement('div');
+  div.className = 'msg system';
+  div.textContent = text;
+  messagesEl.appendChild(div);
+  scrollBottom();
+}
+
+function addErrorMsg(text) {
+  hideIntro();
+  const div = document.createElement('div');
+  div.className = 'msg error';
+  div.textContent = text;
+  messagesEl.appendChild(div);
+  scrollBottom();
+}
+
+function scrollBottom() {
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function autoResize() {
+  promptEl.style.height = 'auto';
+  promptEl.style.height = `${Math.min(promptEl.scrollHeight, 144)}px`;
+}
+
+promptEl.addEventListener('input', autoResize);
+promptEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+sendBtn.addEventListener('click', sendMessage);
+
+connect();
+</script>
+</body>
+</html>
