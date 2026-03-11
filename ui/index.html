@@ -72,60 +72,68 @@
     --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
   }
 
-  body[data-theme="warp"] {
-    color-scheme: dark;
-    --bg: #120f1e;
-    --bg-accent: rgba(132, 105, 255, 0.26);
-    --bg-secondary: rgba(255, 138, 94, 0.18);
-    --bg-gradient-start: #181126;
-    --bg-gradient-end: #090811;
-    --surface: rgba(20, 18, 32, 0.72);
-    --surface-strong: rgba(29, 25, 46, 0.92);
-    --surface-muted: rgba(22, 18, 35, 0.88);
-    --surface-emphasis: rgba(33, 28, 52, 0.92);
-    --line: rgba(255, 255, 255, 0.08);
-    --line-strong: rgba(255, 255, 255, 0.16);
-    --text: #f6f3ff;
-    --text-muted: #c9c4dc;
-    --text-soft: #948cab;
-    --accent: #8b6cff;
-    --accent-alt: #ff8a5c;
-    --accent-soft: rgba(139, 108, 255, 0.18);
-    --success: #45d4ad;
-    --danger: #ff7b94;
-    --warning: #ffbf72;
-    --shadow: 0 24px 64px rgba(3, 2, 9, 0.5);
-    --inner-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    --glow: 0 0 0 0.35rem rgba(139, 108, 255, 0.14);
-    --app-width: 58rem;
-    --focus-ring: rgba(139, 108, 255, 0.35);
-    --turn-head-bg: linear-gradient(135deg, rgba(139, 108, 255, 0.16), rgba(255, 138, 92, 0.1));
-    --log-bg: rgba(13, 10, 22, 0.72);
-    --approval-bg: rgba(42, 30, 20, 0.72);
-    --approval-border: rgba(255, 191, 114, 0.16);
-    --error-bg: rgba(63, 24, 35, 0.8);
-    --error-border: rgba(255, 123, 148, 0.24);
-    --turn-running-bg: rgba(139, 108, 255, 0.18);
-    --turn-complete-bg: rgba(20, 64, 54, 0.62);
-    --turn-failed-bg: rgba(63, 24, 35, 0.78);
-    --theme-track-bg: rgba(11, 9, 18, 0.88);
-    --theme-pill-text: #bfb6d8;
-    --theme-pill-active-bg: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
-    --send-bg: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
-    --send-shadow: 0 16px 28px rgba(139, 108, 255, 0.28);
-    --status-connected: #8dbdff;
-    --status-working: #ffab7b;
+  body[data-theme="chat"] {
+    color-scheme: light;
+    --bg: #e9eef5;
+    --bg-accent: rgba(10, 132, 255, 0.18);
+    --bg-secondary: rgba(84, 199, 236, 0.16);
+    --bg-gradient-start: #edf2f8;
+    --bg-gradient-end: #dfe7f0;
+    --surface: rgba(250, 252, 255, 0.7);
+    --surface-strong: rgba(255, 255, 255, 0.92);
+    --surface-muted: rgba(247, 250, 255, 0.88);
+    --surface-emphasis: rgba(255, 255, 255, 0.94);
+    --line: rgba(46, 72, 107, 0.09);
+    --line-strong: rgba(46, 72, 107, 0.16);
+    --text: #152033;
+    --text-muted: #5e6d84;
+    --text-soft: #8190a7;
+    --accent: #0a84ff;
+    --accent-alt: #54c7ec;
+    --accent-soft: rgba(10, 132, 255, 0.12);
+    --success: #1f9d62;
+    --danger: #d84f4f;
+    --warning: #936400;
+    --shadow: 0 20px 50px rgba(67, 86, 110, 0.12);
+    --inner-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+    --glow: 0 0 0 0.35rem rgba(10, 132, 255, 0.12);
+    --app-width: 50rem;
+    --focus-ring: rgba(10, 132, 255, 0.22);
+    --turn-head-bg: transparent;
+    --log-bg: rgba(244, 247, 252, 0.92);
+    --approval-bg: rgba(255, 248, 228, 0.96);
+    --approval-border: rgba(147, 100, 0, 0.18);
+    --error-bg: rgba(255, 242, 241, 0.96);
+    --error-border: rgba(216, 79, 79, 0.16);
+    --turn-running-bg: rgba(10, 132, 255, 0.12);
+    --turn-complete-bg: rgba(228, 247, 238, 0.94);
+    --turn-failed-bg: rgba(255, 241, 241, 0.96);
+    --theme-track-bg: rgba(255, 255, 255, 0.82);
+    --theme-pill-text: #64748b;
+    --theme-pill-active-bg: linear-gradient(180deg, #1792ff 0%, #0a84ff 100%);
+    --theme-pill-active-text: #fff;
+    --send-bg: linear-gradient(180deg, #1792ff 0%, #0a84ff 100%);
+    --send-shadow: 0 16px 28px rgba(10, 132, 255, 0.22);
+    --status-connected: #54c7ec;
+    --status-ready: #1f9d62;
+    --status-working: #0a84ff;
     --body-overlay:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 10rem),
-      radial-gradient(circle at top left, rgba(139, 108, 255, 0.3), transparent 28rem),
-      radial-gradient(circle at 85% 15%, rgba(255, 138, 92, 0.22), transparent 22rem);
-    --body-pattern: radial-gradient(circle, rgba(255, 255, 255, 0.72) 0 0.85px, transparent 1px);
-    --body-pattern-size: 18px 18px;
-    --body-pattern-opacity: 0.08;
-    --body-pattern-blend: screen;
-    --sans: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
-    --mono: "JetBrains Mono", "SF Mono", "IBM Plex Mono", "Cascadia Code", monospace;
-    --serif: "Canela", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+      linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 12rem),
+      radial-gradient(circle at top left, rgba(10, 132, 255, 0.16), transparent 28rem),
+      radial-gradient(circle at 90% 12%, rgba(84, 199, 236, 0.14), transparent 24rem);
+    --body-pattern: none;
+    --body-pattern-size: auto;
+    --body-pattern-opacity: 0;
+    --body-pattern-blend: normal;
+    --topbar-radius: 1.55rem;
+    --surface-radius: 1.4rem;
+    --card-radius: 1.6rem;
+    --composer-radius: 1.4rem;
+    --button-radius: 1.3rem;
+    --message-font: var(--sans);
+    --sans: "SF Pro Display", "Avenir Next", "Segoe UI", sans-serif;
+    --mono: "SF Mono", "IBM Plex Mono", "Cascadia Code", monospace;
+    --serif: "SF Pro Display", "Avenir Next", "Segoe UI", sans-serif;
   }
 
   body[data-theme="shell"] {
@@ -636,6 +644,89 @@
     scroll-padding-bottom: 6rem;
   }
 
+  .messages[data-layout="shell"] {
+    gap: 0.35rem;
+  }
+
+  .shell-turn {
+    display: grid;
+    gap: 0.28rem;
+    padding: 0.15rem 0 0.85rem;
+  }
+
+  .shell-line {
+    display: grid;
+    grid-template-columns: 1.4rem minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    font-family: var(--mono);
+  }
+
+  .shell-gutter {
+    color: var(--text-soft);
+    text-align: right;
+    user-select: none;
+    padding-top: 0.05rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+  }
+
+  .shell-text,
+  .shell-approval-wrap {
+    min-width: 0;
+    font-family: var(--mono);
+  }
+
+  .shell-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.88rem;
+    line-height: 1.68;
+    color: var(--text-muted);
+  }
+
+  .shell-prompt-line .shell-gutter,
+  .shell-log-line.command .shell-gutter {
+    color: var(--accent);
+  }
+
+  .shell-prompt-text {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .shell-answer-line .shell-gutter {
+    color: var(--accent-alt);
+  }
+
+  .shell-answer-line .shell-text {
+    color: var(--text);
+  }
+
+  .shell-status-line .shell-text,
+  .shell-notice-line.system .shell-text {
+    color: var(--text-soft);
+    font-size: 0.78rem;
+  }
+
+  .shell-status-line.success .shell-text {
+    color: var(--success);
+  }
+
+  .shell-status-line.failed .shell-text,
+  .shell-error-line .shell-text,
+  .shell-notice-line.error .shell-text {
+    color: var(--danger);
+  }
+
+  .shell-approval-line {
+    margin: 0.18rem 0 0.28rem;
+  }
+
+  .shell-approval-wrap .approval-card {
+    width: 100%;
+  }
+
   .turn-card,
   .msg.system,
   .msg.error {
@@ -739,6 +830,11 @@
     overflow-y: auto;
   }
 
+  .turn-answer-wrap {
+    display: grid;
+    gap: 0.4rem;
+  }
+
   .turn-answer {
     min-height: 1.5rem;
     font-size: 0.97rem;
@@ -755,6 +851,65 @@
 
   .turn-answer.has-content + .turn-answer-placeholder {
     display: none;
+  }
+
+  .turn-approvals {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .turn-approvals.is-empty {
+    display: none;
+  }
+
+  .approval-card {
+    border: 1px solid var(--approval-border);
+    border-radius: 1.1rem;
+    background: var(--approval-bg);
+    overflow: hidden;
+    box-shadow: var(--inner-shadow);
+  }
+
+  .approval-card-head {
+    padding: 0.9rem 0.95rem 0.5rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .approval-card-kicker {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--warning);
+  }
+
+  .approval-card-title {
+    font-size: 0.92rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .approval-card-body {
+    padding: 0 0.95rem 0.9rem;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+    font-family: var(--mono);
+  }
+
+  .approval-note {
+    padding: 0.75rem 0.95rem 0;
+    color: var(--text-soft);
+    font-size: 0.78rem;
+  }
+
+  .approval-card[data-state="sent"] .approval-note {
+    color: var(--success);
+  }
+
+  .approval-card[data-state="declined"] .approval-note {
+    color: var(--danger);
   }
 
   .turn-inline-error {
@@ -860,16 +1015,12 @@
     color: var(--danger);
   }
 
-  .log-section.approval {
-    background: var(--approval-bg);
-    border-color: var(--approval-border);
-  }
-
   .approval-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
-    margin-top: 0.85rem;
+    padding: 0.9rem 0.95rem 0.95rem;
+    border-top: 1px solid var(--line);
   }
 
   .approval-actions button {
@@ -895,6 +1046,12 @@
     color: var(--danger);
     border-color: color-mix(in srgb, var(--danger) 16%, transparent);
     background: color-mix(in srgb, var(--error-bg) 84%, transparent);
+  }
+
+  .approval-actions button:disabled {
+    opacity: 0.68;
+    cursor: wait;
+    transform: none;
   }
 
   .msg.system {
@@ -987,32 +1144,108 @@
     font-size: 0.76rem;
   }
 
-  body[data-theme="warp"] .topbar,
-  body[data-theme="warp"] .session-strip,
-  body[data-theme="warp"] .composer-shell,
-  body[data-theme="warp"] .intro,
-  body[data-theme="warp"] .turn-card {
-    backdrop-filter: blur(20px) saturate(135%);
+  body[data-theme="chat"] .topbar,
+  body[data-theme="chat"] .session-strip,
+  body[data-theme="chat"] .composer-shell,
+  body[data-theme="chat"] .intro {
+    background: rgba(248, 251, 255, 0.76);
+    backdrop-filter: blur(22px) saturate(140%);
   }
 
-  body[data-theme="warp"] .brand-mark {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+  body[data-theme="chat"] .brand-mark {
+    background: linear-gradient(180deg, #34a4ff 0%, #0a84ff 100%);
   }
 
-  body[data-theme="warp"] .turn-card::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), var(--accent-alt), transparent);
-    opacity: 0.7;
-    pointer-events: none;
+  body[data-theme="chat"] .turn-card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
   }
 
-  body[data-theme="warp"] .intro h2 {
+  body[data-theme="chat"] .turn-head {
+    padding: 0 0 0.38rem 3rem;
+    background: transparent;
+    border-bottom: 0;
+    backdrop-filter: none;
+  }
+
+  body[data-theme="chat"] .turn-head-row {
+    justify-content: flex-end;
+    margin-bottom: 0.35rem;
+  }
+
+  body[data-theme="chat"] .turn-label {
+    display: none;
+  }
+
+  body[data-theme="chat"] .turn-status {
+    min-height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 0.73rem;
+  }
+
+  body[data-theme="chat"] .turn-prompt {
+    max-width: min(82%, 29rem);
+    margin-left: auto;
+    padding: 0.86rem 1rem;
+    border-radius: 1.35rem 1.35rem 0.45rem 1.35rem;
+    background: linear-gradient(180deg, #1a93ff 0%, #0a84ff 100%);
+    color: #fff;
+    box-shadow: 0 16px 28px rgba(10, 132, 255, 0.18);
+  }
+
+  body[data-theme="chat"] .turn-body {
+    padding: 0;
+    gap: 0.72rem;
+  }
+
+  body[data-theme="chat"] .turn-card.is-active .turn-body {
+    max-height: none;
+    overflow: visible;
+  }
+
+  body[data-theme="chat"] .turn-answer-wrap,
+  body[data-theme="chat"] .turn-approvals,
+  body[data-theme="chat"] .turn-details,
+  body[data-theme="chat"] .turn-inline-error {
+    max-width: min(86%, 31rem);
+  }
+
+  body[data-theme="chat"] .turn-answer-wrap {
+    padding: 0.95rem 1rem;
+    border-radius: 1.4rem 1.4rem 1.4rem 0.45rem;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(46, 72, 107, 0.08);
+    box-shadow: 0 16px 30px rgba(67, 86, 110, 0.1);
+  }
+
+  body[data-theme="chat"] .turn-details {
+    border-top: 0;
+    padding-top: 0;
+    padding-left: 0.2rem;
+  }
+
+  body[data-theme="chat"] .turn-details summary {
+    min-height: 2.35rem;
+  }
+
+  body[data-theme="chat"] .approval-card,
+  body[data-theme="chat"] .msg.error {
+    box-shadow: 0 16px 30px rgba(67, 86, 110, 0.1);
+  }
+
+  body[data-theme="chat"] .intro h2 {
     font-family: var(--sans);
-    font-weight: 600;
-    line-height: 1.05;
+    font-weight: 700;
+    line-height: 1.04;
+  }
+
+  body[data-theme="block"] .brand-mark {
+    background: var(--accent);
   }
 
   body[data-theme="shell"] .topbar,
@@ -1070,6 +1303,41 @@
     height: 2rem;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
     pointer-events: none;
+  }
+
+  body[data-theme="shell"] .turn-head {
+    padding-top: 2.4rem;
+    position: relative;
+  }
+
+  body[data-theme="shell"] .turn-head::before {
+    content: "";
+    position: absolute;
+    top: 0.9rem;
+    left: 1rem;
+    width: 0.72rem;
+    height: 0.72rem;
+    border-radius: 999px;
+    background: #ff5f57;
+    box-shadow:
+      1.05rem 0 0 #febc2e,
+      2.1rem 0 0 #28c840;
+  }
+
+  body[data-theme="shell"] .turn-prompt,
+  body[data-theme="shell"] .turn-answer,
+  body[data-theme="shell"] .turn-answer-placeholder,
+  body[data-theme="shell"] .approval-card-body {
+    font-family: var(--mono);
+  }
+
+  body[data-theme="shell"] .turn-answer-wrap {
+    padding: 0.05rem 0;
+  }
+
+  body[data-theme="shell"] .approval-card {
+    border-radius: 0.9rem;
+    background: rgba(24, 22, 10, 0.98);
   }
 
   body[data-theme="shell"] .turn-card.is-active .turn-body {
@@ -1165,7 +1433,7 @@
   }
 </style>
 </head>
-<body data-theme="paper">
+<body data-theme="block">
 <a class="skip-link" href="#mainContent">Skip to conversation</a>
 <div class="app-shell">
   <header class="topbar">
@@ -1180,9 +1448,9 @@
       <div class="theme-switcher" role="group" aria-label="Theme switcher">
         <span class="theme-switcher-label">Theme</span>
         <div class="theme-switcher-options">
-          <button class="theme-option" type="button" data-theme-option="paper" data-active="true" aria-pressed="true" aria-label="Switch to Paper theme">Paper</button>
-          <button class="theme-option" type="button" data-theme-option="warp" data-active="false" aria-pressed="false" aria-label="Switch to Warp palette theme">Warp</button>
-          <button class="theme-option" type="button" data-theme-option="shell" data-active="false" aria-pressed="false" aria-label="Switch to Web Shell theme">Shell</button>
+          <button class="theme-option" type="button" data-theme-option="chat" data-active="false" aria-pressed="false" aria-label="Switch to Chat theme">Chat</button>
+          <button class="theme-option" type="button" data-theme-option="block" data-active="true" aria-pressed="true" aria-label="Switch to Block theme">Block</button>
+          <button class="theme-option" type="button" data-theme-option="shell" data-active="false" aria-pressed="false" aria-label="Switch to Shell theme">Shell</button>
         </div>
       </div>
       <div class="status-chip" id="statusChip" data-state="connecting">
@@ -1197,12 +1465,12 @@
     <div class="session-meta">
       <div class="session-meta-copy">
         <div class="meta-block">
-          <p class="meta-label">Session</p>
-          <p class="meta-value">One prompt, one response block, expandable work log.</p>
+          <p class="meta-label">Behavior</p>
+          <p class="meta-value" id="themeBehavior">Prompt, answer, approvals, and a folded work log live in one turn card.</p>
         </div>
         <div class="meta-block">
           <p class="meta-label">Theme</p>
-          <p class="meta-value" id="themeSummary">Paper · warm paper surfaces and calm prompt-to-answer pacing.</p>
+          <p class="meta-value" id="themeSummary">Block · warm paper blocks with explicit output, approvals, and folded logs.</p>
         </div>
       </div>
       <span class="thread-pill" id="threadId">new session</span>
@@ -1259,6 +1527,7 @@ const sendBtn = document.getElementById('send');
 const statusChipEl = document.getElementById('statusChip');
 const statusLabelEl = document.getElementById('statusLabel');
 const threadIdEl = document.getElementById('threadId');
+const themeBehaviorEl = document.getElementById('themeBehavior');
 const themeSummaryEl = document.getElementById('themeSummary');
 const themeButtons = Array.from(document.querySelectorAll('[data-theme-option]'));
 const cwdEl = document.getElementById('cwd');
@@ -1267,40 +1536,56 @@ const stopBtn = document.getElementById('stopBtn');
 
 const THEME_STORAGE_KEY = 'codex-rc-theme';
 const THEMES = {
-  paper: {
-    summary: 'Paper · warm paper surfaces and calm prompt-to-answer pacing.',
+  chat: {
+    summary: 'Chat · prompt bubble and final answer only. Work log stays hidden, approvals stay visible.',
+    behavior: 'Show only the sent prompt, the final Codex answer, and any approval gates. Hide command, reasoning, plan, and diff logs.',
+    kicker: 'Chat View',
+    title: 'Conversation view with only the result, not the machinery.',
+    copy: 'Prompts render like sent bubbles, Codex answers like received bubbles, and approval requests interrupt inline. Work logs stay out of sight until you switch to another theme.',
+  },
+  block: {
+    summary: 'Block · warm paper blocks with explicit output, approvals, and folded logs.',
+    behavior: 'Keep one prompt per card. Show the final answer first, keep approvals visible, and fold reasoning, commands, plans, and diffs into a work log.',
     kicker: 'Turn Blocks',
     title: 'Each prompt stays anchored while Codex streams underneath.',
-    copy: 'Send a prompt and watch one dedicated response block grow in place. Final output stays readable first, while commands, diffs, approvals, and reasoning live in a folded work log.',
-  },
-  warp: {
-    summary: 'Warp · luminous dark blocks with fast-accent gradients and terminal focus.',
-    kicker: 'Warp Palette',
-    title: 'Gradient-lit turn blocks keep the run state readable at a glance.',
-    copy: 'A darker, more agentic surface modeled on Warp’s colorful terminal language: bright action rails, quiet depth, and prominent streaming states for prompts, approvals, and command output.',
+    copy: 'Use the block theme for the clearest one-prompt-one-run layout. Final output stays readable first, approvals stay visible, and command, reasoning, and diff details fold into a work log.',
   },
   shell: {
-    summary: 'Shell · dense terminal chrome inspired by VS Code and iTerm.',
-    kicker: 'Web Shell',
-    title: 'Editor-grade shell chrome makes remote turns feel closer to a real terminal.',
-    copy: 'A tighter terminal variant with darker panes, code-weight typography, and restrained grid texture so logs, approvals, and output-heavy turns feel native to a shell workflow.',
+    summary: 'Shell · continuous transcript with no cards. Prompt, output, approvals, and logs stream inline.',
+    behavior: 'Drop the card layout. Render prompts, command output, reasoning, approvals, diffs, and final answers as one continuous shell transcript.',
+    kicker: 'Shell View',
+    title: 'Terminal-grade transcript instead of per-turn cards.',
+    copy: 'Shell mode is not a block UI. It renders a running transcript like a real terminal session, so prompts, tool output, approvals, and final answers all flow top-to-bottom.',
   },
+};
+const LEGACY_THEME_ALIASES = {
+  paper: 'block',
+  warp: 'shell',
 };
 
 let ws = null;
+let currentTheme = null;
 let currentThreadId = null;
 let currentTurnId = null;
 let turnActive = false;
-let pendingTurnBlock = null;
+let pendingTurnKey = null;
+let nextTurnSeq = 1;
+let nextNoticeSeq = 1;
 
-const turnBlocks = new Map();
+const turns = [];
+const turnByKey = new Map();
+const turnById = new Map();
 const activeItems = new Map();
+const notices = [];
 
 function applyTheme(themeName) {
-  const resolvedTheme = THEMES[themeName] ? themeName : 'paper';
+  const migratedTheme = LEGACY_THEME_ALIASES[themeName] || themeName;
+  const resolvedTheme = THEMES[migratedTheme] ? migratedTheme : 'block';
   const theme = THEMES[resolvedTheme];
 
+  currentTheme = resolvedTheme;
   document.body.dataset.theme = resolvedTheme;
+  themeBehaviorEl.textContent = theme.behavior;
   themeSummaryEl.textContent = theme.summary;
   introKickerEl.textContent = theme.kicker;
   introTitleEl.textContent = theme.title;
@@ -1315,6 +1600,8 @@ function applyTheme(themeName) {
   try {
     localStorage.setItem(THEME_STORAGE_KEY, resolvedTheme);
   } catch {}
+
+  renderMessages();
 }
 
 function initTheme() {
@@ -1324,7 +1611,7 @@ function initTheme() {
     savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
   } catch {}
 
-  applyTheme(savedTheme || document.body.dataset.theme || 'paper');
+  applyTheme(savedTheme || document.body.dataset.theme || 'block');
 
   themeButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
@@ -1396,11 +1683,394 @@ function extractPromptText(item) {
     .trim();
 }
 
-function getCurrentTurnBlock() {
-  if (currentTurnId && turnBlocks.has(currentTurnId)) {
-    return turnBlocks.get(currentTurnId);
+function createTurn(promptText = '') {
+  const turn = {
+    key: `turn-${nextTurnSeq++}`,
+    promptText,
+    turnId: null,
+    threadId: null,
+    state: 'pending',
+    statusLabel: 'Waiting to start',
+    segments: [],
+    errorText: '',
+    detailsOpen: false,
+    nextSegmentSeq: 1,
+  };
+
+  turns.push(turn);
+  turnByKey.set(turn.key, turn);
+  return turn;
+}
+
+function makeSegment(turn, kind, extra = {}) {
+  const segment = {
+    id: `${turn.key}-segment-${turn.nextSegmentSeq++}`,
+    kind,
+    ...extra,
+  };
+  turn.segments.push(segment);
+  return segment;
+}
+
+function getCurrentTurn() {
+  if (currentTurnId && turnById.has(currentTurnId)) {
+    return turnById.get(currentTurnId);
   }
-  return pendingTurnBlock;
+  return pendingTurnKey ? turnByKey.get(pendingTurnKey) : null;
+}
+
+function ensureTurn(threadId, turnId, promptText = '') {
+  if (turnId && turnById.has(turnId)) {
+    const turn = turnById.get(turnId);
+    if (!turn.threadId && threadId) turn.threadId = threadId;
+    if (promptText && !turn.promptText) turn.promptText = promptText;
+    return turn;
+  }
+
+  const turn = createTurn(promptText);
+  turn.turnId = turnId || null;
+  turn.threadId = threadId || null;
+  if (turnId) turnById.set(turnId, turn);
+  return turn;
+}
+
+function createPendingTurn(promptText) {
+  hideIntro();
+  const turn = createTurn(promptText);
+  pendingTurnKey = turn.key;
+  renderMessages();
+  scrollToLatest(turn.key);
+  return turn;
+}
+
+function setTurnPrompt(turn, promptText) {
+  if (!turn || !promptText) return;
+  turn.promptText = promptText;
+}
+
+function bindPendingTurn(threadId, turnId) {
+  const turn = (pendingTurnKey && turnByKey.get(pendingTurnKey)) || ensureTurn(threadId, turnId);
+  turn.turnId = turnId;
+  turn.threadId = threadId;
+  turnById.set(turnId, turn);
+  currentThreadId = threadId;
+  currentTurnId = turnId;
+  pendingTurnKey = null;
+  updateThreadBadge(threadId);
+  updateTurnState(turn, 'running', 'Streaming');
+  return turn;
+}
+
+function updateTurnState(turn, state, label) {
+  if (!turn) return;
+  turn.state = state;
+  turn.statusLabel = label;
+}
+
+function isTurnActive(turn) {
+  return turn && ['pending', 'running', 'stopping'].includes(turn.state);
+}
+
+function getAnswerSegments(turn) {
+  return turn.segments.filter((segment) => segment.kind === 'answer');
+}
+
+function getApprovalSegments(turn) {
+  return turn.segments.filter((segment) => segment.kind === 'approval');
+}
+
+function isLogSegment(segment) {
+  return ['reasoning', 'command', 'file-change', 'plan'].includes(segment.kind);
+}
+
+function getLogSegments(turn) {
+  return turn.segments.filter(isLogSegment);
+}
+
+function getTurnAnswerText(turn) {
+  return getAnswerSegments(turn)
+    .map((segment) => segment.text || '')
+    .filter(Boolean)
+    .join('\n\n');
+}
+
+function getAnswerPlaceholder(turn) {
+  if (turn.errorText) return 'Turn failed before a final answer was returned.';
+  if (turn.state === 'completed') return 'No final answer returned.';
+  if (turn.state === 'interrupted') return 'Turn interrupted.';
+  if (turn.state === 'failed') return 'Turn failed.';
+  return 'Preparing a response…';
+}
+
+function addNotice(kind, text) {
+  notices.push({
+    id: `notice-${nextNoticeSeq++}`,
+    kind,
+    text,
+  });
+  renderMessages();
+  scrollToLatest();
+}
+
+function renderMessages() {
+  const theme = currentTheme || document.body.dataset.theme || 'block';
+  messagesEl.dataset.layout = theme;
+  messagesEl.innerHTML = '';
+
+  notices.forEach((notice) => {
+    messagesEl.appendChild(renderNotice(notice, theme));
+  });
+
+  turns.forEach((turn) => {
+    const node = theme === 'shell' ? renderShellTurn(turn) : renderTurnCard(turn, theme);
+    messagesEl.appendChild(node);
+  });
+
+  wireMessageInteractions();
+}
+
+function renderNotice(notice, theme) {
+  const root = document.createElement('div');
+
+  if (theme === 'shell') {
+    root.className = `shell-line shell-notice-line ${notice.kind}`;
+    root.innerHTML = `
+      <span class="shell-gutter">${notice.kind === 'error' ? '!' : '#'}</span>
+      <div class="shell-text">${escapeHtml(notice.text)}</div>
+    `;
+    return root;
+  }
+
+  root.className = `msg ${notice.kind}`;
+  root.textContent = notice.text;
+  return root;
+}
+
+function renderTurnCard(turn, theme) {
+  const root = document.createElement('article');
+  root.className = `turn-card${isTurnActive(turn) ? ' is-active' : ''}`;
+  root.dataset.state = turn.state;
+  root.dataset.turnKey = turn.key;
+
+  const answerText = getTurnAnswerText(turn);
+  const approvals = getApprovalSegments(turn);
+  const logs = getLogSegments(turn);
+  const showLogs = theme === 'block' && logs.length > 0;
+
+  root.innerHTML = `
+    <div class="turn-head">
+      <div class="turn-head-row">
+        <span class="turn-label">Prompt</span>
+        <span class="turn-status">${escapeHtml(turn.statusLabel)}</span>
+      </div>
+      <p class="turn-prompt">${escapeHtml(turn.promptText || '')}</p>
+    </div>
+    <div class="turn-body">
+      <div class="turn-answer-wrap">
+        <div class="turn-answer${answerText ? ' has-content' : ''}">${escapeHtml(answerText)}</div>
+        <div class="turn-answer-placeholder">${escapeHtml(getAnswerPlaceholder(turn))}</div>
+      </div>
+      ${approvals.length ? `<div class="turn-approvals">${renderApprovalCards(turn, approvals)}</div>` : '<div class="turn-approvals is-empty"></div>'}
+      ${showLogs ? renderWorkLog(turn, logs) : ''}
+      ${turn.errorText ? `<div class="turn-inline-error">${escapeHtml(turn.errorText)}</div>` : ''}
+    </div>
+  `;
+
+  return root;
+}
+
+function renderWorkLog(turn, logs) {
+  const count = `${logs.length} section${logs.length === 1 ? '' : 's'}`;
+  return `
+    <details class="turn-details" data-turn-key="${turn.key}"${turn.detailsOpen ? ' open' : ''}>
+      <summary>
+        <span>Work log</span>
+        <span class="turn-details-meta">${count}</span>
+      </summary>
+      <div class="turn-log-stack">
+        ${logs.map((segment) => renderLogSegment(segment)).join('')}
+      </div>
+    </details>
+  `;
+}
+
+function renderLogSegment(segment) {
+  return `
+    <section class="log-section ${segment.kind}">
+      <div class="log-section-head">
+        <div class="log-kind">${escapeHtml(segment.label || segment.kind)}</div>
+        <div class="log-meta">${escapeHtml(segment.meta || '')}</div>
+      </div>
+      <div class="log-body">${escapeHtml(segment.body || '')}</div>
+      ${segment.footer ? `<div class="log-footer${segment.footerClass ? ` ${segment.footerClass}` : ''}">${escapeHtml(segment.footer)}</div>` : ''}
+    </section>
+  `;
+}
+
+function renderApprovalCards(turn, approvals) {
+  let order = 0;
+  return approvals.map((segment) => {
+    order += 1;
+    return renderApprovalCard(turn, segment, `Approval ${order}`);
+  }).join('');
+}
+
+function renderApprovalCard(turn, segment, kicker) {
+  const disabled = segment.state !== 'pending' ? ' disabled' : '';
+
+  return `
+    <section class="approval-card" data-state="${escapeHtml(segment.state)}">
+      <div class="approval-card-head">
+        <div class="approval-card-kicker">${escapeHtml(kicker)}</div>
+        <div class="approval-card-title">${escapeHtml(segment.title)}</div>
+      </div>
+      <div class="approval-card-body">${escapeHtml(segment.description)}</div>
+      <div class="approval-note">${escapeHtml(segment.note)}</div>
+      <div class="approval-actions">
+        <button class="btn-accept" type="button" data-approval-action="accept" data-turn-key="${turn.key}" data-segment-id="${segment.id}"${disabled}>Approve once</button>
+        <button class="btn-secondary" type="button" data-approval-action="acceptForSession" data-turn-key="${turn.key}" data-segment-id="${segment.id}"${disabled}>Approve for session</button>
+        <button class="btn-decline" type="button" data-approval-action="decline" data-turn-key="${turn.key}" data-segment-id="${segment.id}"${disabled}>Decline</button>
+      </div>
+    </section>
+  `;
+}
+
+function renderShellTurn(turn) {
+  const root = document.createElement('section');
+  root.className = 'shell-turn';
+  root.dataset.turnKey = turn.key;
+  root.dataset.state = turn.state;
+
+  let approvalCount = 0;
+  const parts = [
+    `
+      <div class="shell-line shell-prompt-line">
+        <span class="shell-gutter">$</span>
+        <div class="shell-text shell-prompt-text">${escapeHtml(turn.promptText || '')}</div>
+      </div>
+    `,
+  ];
+
+  if (!turn.segments.length) {
+    parts.push(`
+      <div class="shell-line shell-status-line">
+        <span class="shell-gutter">#</span>
+        <div class="shell-text">${escapeHtml(getAnswerPlaceholder(turn))}</div>
+      </div>
+    `);
+  }
+
+  turn.segments.forEach((segment) => {
+    if (segment.kind === 'approval') {
+      approvalCount += 1;
+    }
+    parts.push(renderShellSegment(turn, segment, approvalCount));
+  });
+
+  if (turn.errorText) {
+    parts.push(`
+      <div class="shell-line shell-error-line">
+        <span class="shell-gutter">!</span>
+        <div class="shell-text">${escapeHtml(turn.errorText)}</div>
+      </div>
+    `);
+  }
+
+  parts.push(`
+    <div class="shell-line shell-status-line">
+      <span class="shell-gutter">#</span>
+      <div class="shell-text">${escapeHtml(turn.statusLabel)}</div>
+    </div>
+  `);
+
+  root.innerHTML = parts.join('');
+  return root;
+}
+
+function renderShellSegment(turn, segment, approvalCount) {
+  switch (segment.kind) {
+    case 'answer':
+      if (!segment.text) return '';
+      return `
+        <div class="shell-line shell-answer-line">
+          <span class="shell-gutter">></span>
+          <div class="shell-text">${escapeHtml(segment.text)}</div>
+        </div>
+      `;
+    case 'command':
+      return renderShellCommand(segment);
+    case 'reasoning':
+      return renderShellLog(segment, '?');
+    case 'file-change':
+      return renderShellLog(segment, '%');
+    case 'plan':
+      return renderShellLog(segment, '=');
+    case 'approval':
+      return `
+        <div class="shell-line shell-approval-line">
+          <span class="shell-gutter">!</span>
+          <div class="shell-approval-wrap">
+            ${renderApprovalCard(turn, segment, `Approval ${approvalCount}`)}
+          </div>
+        </div>
+      `;
+    default:
+      return '';
+  }
+}
+
+function renderShellLog(segment, gutter) {
+  const bodyText = `${segment.label || segment.kind}${segment.meta ? ` · ${segment.meta}` : ''}${segment.body ? `\n${segment.body}` : ''}`;
+  const footerHtml = segment.footer
+    ? `
+      <div class="shell-line shell-status-line${segment.footerClass ? ` ${segment.footerClass}` : ''}">
+        <span class="shell-gutter">#</span>
+        <div class="shell-text">${escapeHtml(segment.footer)}</div>
+      </div>
+    `
+    : '';
+
+  return `
+    <div class="shell-line shell-log-line ${segment.kind}">
+      <span class="shell-gutter">${gutter}</span>
+      <div class="shell-text">${escapeHtml(bodyText)}</div>
+    </div>
+    ${footerHtml}
+  `;
+}
+
+function renderShellCommand(segment) {
+  const footerHtml = segment.footer
+    ? `
+      <div class="shell-line shell-status-line${segment.footerClass ? ` ${segment.footerClass}` : ''}">
+        <span class="shell-gutter">#</span>
+        <div class="shell-text">${escapeHtml(segment.footer)}</div>
+      </div>
+    `
+    : '';
+
+  return `
+    <div class="shell-line shell-log-line command">
+      <span class="shell-gutter">$</span>
+      <div class="shell-text">${escapeHtml(segment.meta || '')}${segment.body ? `\n${escapeHtml(segment.body)}` : ''}</div>
+    </div>
+    ${footerHtml}
+  `;
+}
+
+function wireMessageInteractions() {
+  messagesEl.querySelectorAll('.turn-details').forEach((details) => {
+    details.addEventListener('toggle', () => {
+      const turn = turnByKey.get(details.dataset.turnKey);
+      if (turn) turn.detailsOpen = details.open;
+    });
+  });
+
+  messagesEl.querySelectorAll('[data-approval-action]').forEach((button) => {
+    button.addEventListener('click', () => {
+      sendApproval(button.dataset.turnKey, button.dataset.segmentId, button.dataset.approvalAction);
+    });
+  });
 }
 
 function connect() {
@@ -1476,115 +2146,23 @@ function handleMessage(msg) {
   }
 }
 
-function createTurnBlock(promptText) {
-  const root = document.createElement('article');
-  root.className = 'turn-card is-active';
-  root.dataset.state = 'pending';
-  root.innerHTML = `
-    <div class="turn-head">
-      <div class="turn-head-row">
-        <span class="turn-label">Prompt</span>
-        <span class="turn-status">Waiting to start</span>
-      </div>
-      <p class="turn-prompt">${escapeHtml(promptText)}</p>
-    </div>
-    <div class="turn-body">
-      <div class="turn-answer-wrap">
-        <div class="turn-answer"></div>
-        <div class="turn-answer-placeholder">Preparing a response…</div>
-      </div>
-      <details class="turn-details is-empty">
-        <summary>
-          <span>Work log</span>
-          <span class="turn-details-meta">0 sections</span>
-        </summary>
-        <div class="turn-log-stack"></div>
-      </details>
-    </div>
-  `;
-
-  const block = {
-    root,
-    promptText,
-    turnId: null,
-    threadId: null,
-    logCount: 0,
-    lastAnswerItemId: null,
-    promptEl: root.querySelector('.turn-prompt'),
-    statusEl: root.querySelector('.turn-status'),
-    answerEl: root.querySelector('.turn-answer'),
-    placeholderEl: root.querySelector('.turn-answer-placeholder'),
-    bodyEl: root.querySelector('.turn-body'),
-    detailsEl: root.querySelector('.turn-details'),
-    detailsMetaEl: root.querySelector('.turn-details-meta'),
-    logStackEl: root.querySelector('.turn-log-stack'),
-  };
-
-  messagesEl.appendChild(root);
-  scrollToLatest(block);
-  return block;
-}
-
-function createPendingTurnBlock(promptText) {
-  hideIntro();
-  const block = createTurnBlock(promptText);
-  pendingTurnBlock = block;
-  return block;
-}
-
-function setTurnPrompt(block, promptText) {
-  if (!block || !promptText) return;
-  block.promptText = promptText;
-  block.promptEl.textContent = promptText;
-}
-
-function ensureTurnBlock(threadId, turnId, promptText = '') {
-  if (turnId && turnBlocks.has(turnId)) {
-    const block = turnBlocks.get(turnId);
-    if (!block.threadId && threadId) block.threadId = threadId;
-    if (promptText && !block.promptText) setTurnPrompt(block, promptText);
-    return block;
-  }
-
-  const block = createTurnBlock(promptText);
-  block.turnId = turnId;
-  block.threadId = threadId;
-  turnBlocks.set(turnId, block);
-  return block;
-}
-
-function bindPendingBlockToTurn(threadId, turnId) {
-  const block = pendingTurnBlock || ensureTurnBlock(threadId, turnId);
-  block.turnId = turnId;
-  block.threadId = threadId;
-  turnBlocks.set(turnId, block);
-  currentThreadId = threadId;
-  currentTurnId = turnId;
-  pendingTurnBlock = null;
-  updateThreadBadge(threadId);
-  updateTurnBlockState(block, 'running', 'Streaming');
-  return block;
-}
-
 function onTurnStarted(threadId, turnId) {
-  if (pendingTurnBlock) {
-    bindPendingBlockToTurn(threadId, turnId);
+  let turn = null;
+
+  if (pendingTurnKey) {
+    turn = bindPendingTurn(threadId, turnId);
     setTurnActive(true);
-    return;
-  }
-
-  const block = ensureTurnBlock(threadId, turnId);
-  updateTurnBlockState(block, 'running', 'Streaming');
-
-  if (!currentThreadId) {
+  } else {
+    turn = ensureTurn(threadId, turnId);
+    updateTurnState(turn, 'running', 'Streaming');
+    setTurnActive(true);
+    currentThreadId = threadId;
+    currentTurnId = turnId;
     updateThreadBadge(threadId);
   }
-}
 
-function updateTurnBlockState(block, state, label) {
-  if (!block) return;
-  block.root.dataset.state = state;
-  block.statusEl.textContent = label;
+  renderMessages();
+  scrollToLatest(turn && turn.key);
 }
 
 function setTurnActive(active) {
@@ -1598,201 +2176,111 @@ function setTurnActive(active) {
   }
 }
 
-function revealAnswer(block) {
-  if (!block) return;
-  block.answerEl.classList.add('has-content');
-}
-
-function appendAnswer(block, itemId, content) {
-  if (!block || !content) return;
-  revealAnswer(block);
-
-  const isNewAnswerItem = Boolean(
-    itemId &&
-    block.lastAnswerItemId &&
-    block.lastAnswerItemId !== itemId
-  );
-
-  if (isNewAnswerItem) {
-    const existing = block.answerEl.textContent;
-    if (existing && !existing.endsWith('\n') && !content.startsWith('\n')) {
-      block.answerEl.textContent += '\n\n';
-    } else if (existing.endsWith('\n') && !existing.endsWith('\n\n') && !content.startsWith('\n')) {
-      block.answerEl.textContent += '\n';
-    }
-  }
-
-  if (itemId) {
-    block.lastAnswerItemId = itemId;
-  }
-
-  block.answerEl.textContent += content;
-}
-
-function setInlineError(block, text) {
-  if (!block) {
-    addGlobalError(text);
-    return;
-  }
-
-  let errorEl = block.root.querySelector('.turn-inline-error');
-  if (!errorEl) {
-    errorEl = document.createElement('div');
-    errorEl.className = 'turn-inline-error';
-    block.bodyEl.appendChild(errorEl);
-  }
-  errorEl.textContent = text;
-  scrollToLatest(block);
-}
-
-function ensureLogContainer(block, open = false) {
-  if (!block) return;
-  block.detailsEl.classList.remove('is-empty');
-  block.detailsMetaEl.textContent = `${block.logCount} section${block.logCount === 1 ? '' : 's'}`;
-  if (open) block.detailsEl.open = true;
-}
-
-function addLogSection(block, kind, meta, options = {}) {
-  if (!block) return null;
-
-  block.logCount += 1;
-  ensureLogContainer(block, options.open === true);
-  block.detailsMetaEl.textContent = `${block.logCount} section${block.logCount === 1 ? '' : 's'}`;
-
-  const section = document.createElement('section');
-  section.className = `log-section ${kind}`;
-
-  const head = document.createElement('div');
-  head.className = 'log-section-head';
-
-  const labelEl = document.createElement('div');
-  labelEl.className = 'log-kind';
-  labelEl.textContent = options.label || kind;
-
-  const metaEl = document.createElement('div');
-  metaEl.className = 'log-meta';
-  metaEl.textContent = meta || '';
-
-  head.appendChild(labelEl);
-  head.appendChild(metaEl);
-  section.appendChild(head);
-
-  let bodyEl = null;
-  if (!options.skipBody) {
-    bodyEl = document.createElement('div');
-    bodyEl.className = 'log-body';
-    if (options.body) bodyEl.textContent = options.body;
-    section.appendChild(bodyEl);
-  }
-
-  let footerEl = null;
-  if (options.footer) {
-    footerEl = document.createElement('div');
-    footerEl.className = 'log-footer';
-    footerEl.textContent = options.footer;
-    section.appendChild(footerEl);
-  }
-
-  block.logStackEl.appendChild(section);
-  scrollToLatest(block);
-
-  return { section, bodyEl, metaEl, footerEl };
-}
-
 function onItemStarted(threadId, turnId, itemId, itemType, item) {
   const normalizedType = normalizeItemType(itemType);
   const promptText = normalizedType === 'userMessage' ? extractPromptText(item) : '';
-  const block = turnId ? ensureTurnBlock(threadId, turnId, promptText) : getCurrentTurnBlock();
-  if (!block) return;
+  const turn = turnId ? ensureTurn(threadId, turnId, promptText) : getCurrentTurn();
+  if (!turn) return;
 
   if (promptText) {
-    setTurnPrompt(block, promptText);
+    setTurnPrompt(turn, promptText);
   }
 
   let entry = null;
 
   switch (normalizedType) {
     case 'userMessage':
+      renderMessages();
       return;
-    case 'agentMessage':
+    case 'agentMessage': {
+      const segment = makeSegment(turn, 'answer', { itemId, text: '' });
       entry = {
         kind: 'answer',
-        block,
+        turnKey: turn.key,
         itemId,
-        turnId,
+        segment,
         receivedDelta: false,
       };
       break;
-    case 'reasoning':
-      entry = {
-        kind: 'reasoning',
-        block,
+    }
+    case 'reasoning': {
+      const segment = makeSegment(turn, 'reasoning', {
         itemId,
-        turnId,
-        ...addLogSection(block, 'reasoning', 'Background analysis', { label: 'Reasoning' }),
-      };
+        label: 'Reasoning',
+        meta: 'Background analysis',
+        body: '',
+        footer: '',
+        footerClass: '',
+      });
+      entry = { kind: 'reasoning', turnKey: turn.key, itemId, segment };
       break;
+    }
     case 'commandExecution': {
       const cmd = Array.isArray(item.command) ? item.command.join(' ') : (item.command || '$ ...');
-      entry = {
-        kind: 'commandExecution',
-        block,
+      const segment = makeSegment(turn, 'command', {
         itemId,
-        turnId,
-        ...addLogSection(block, 'command', cmd, {
-          label: 'Command',
-          footer: 'running…',
-        }),
-      };
+        label: 'Command',
+        meta: cmd,
+        body: '',
+        footer: 'running…',
+        footerClass: '',
+      });
+      entry = { kind: 'commandExecution', turnKey: turn.key, itemId, segment };
       break;
     }
     case 'fileChange': {
       const label = item && item.path ? item.path : 'Pending edit';
-      entry = {
-        kind: 'fileChange',
-        block,
+      const segment = makeSegment(turn, 'file-change', {
         itemId,
-        turnId,
-        ...addLogSection(block, 'file-change', label, {
-          label: 'File change',
-        }),
-      };
+        label: 'File change',
+        meta: label,
+        body: '',
+        footer: '',
+        footerClass: '',
+      });
+      entry = { kind: 'fileChange', turnKey: turn.key, itemId, segment };
       break;
     }
-    case 'plan':
-      entry = {
-        kind: 'plan',
-        block,
+    case 'plan': {
+      const segment = makeSegment(turn, 'plan', {
         itemId,
-        turnId,
-        ...addLogSection(block, 'plan', 'Live update', { label: 'Plan' }),
-      };
+        label: 'Plan',
+        meta: 'Live update',
+        body: '',
+        footer: '',
+        footerClass: '',
+      });
+      entry = { kind: 'plan', turnKey: turn.key, itemId, segment };
       break;
+    }
     default:
       return;
   }
 
   activeItems.set(itemId, entry);
+  renderMessages();
+  scrollToLatest(turn.key);
 }
 
 function onDelta(threadId, turnId, itemId, deltaType, content) {
   const entry = activeItems.get(itemId);
-  if (!entry) return;
+  if (!entry || !content) return;
 
   switch (deltaType) {
     case 'agentMessage':
       entry.receivedDelta = true;
-      appendAnswer(entry.block, itemId, content);
+      entry.segment.text += content;
       break;
     case 'reasoning':
     case 'commandOutput':
     case 'fileChange':
     case 'plan':
-      if (entry.bodyEl) entry.bodyEl.textContent += content;
+      entry.segment.body += content;
       break;
   }
 
-  scrollToLatest(entry.block);
+  renderMessages();
+  scrollToLatest(entry.turnKey);
 }
 
 function onItemCompleted(threadId, turnId, itemId, itemType, item) {
@@ -1801,49 +2289,49 @@ function onItemCompleted(threadId, turnId, itemId, itemType, item) {
   const normalizedType = normalizeItemType(itemType);
 
   if (normalizedType === 'agentMessage' && !entry.receivedDelta && typeof item.text === 'string' && item.text) {
-    appendAnswer(entry.block, itemId, item.text);
+    entry.segment.text = item.text;
   }
 
-  if (normalizedType === 'commandExecution' && entry.footerEl) {
+  if (normalizedType === 'commandExecution') {
     const exitCode = item.exitCode;
     const duration = item.durationMs;
     const status = item.status || 'completed';
     if (status === 'completed' && (exitCode === 0 || exitCode === undefined)) {
-      entry.footerEl.className = 'log-footer success';
-      entry.footerEl.textContent = `exit ${exitCode ?? 0}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
+      entry.segment.footerClass = 'success';
+      entry.segment.footer = `exit ${exitCode ?? 0}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
     } else if (status === 'declined') {
-      entry.footerEl.className = 'log-footer failed';
-      entry.footerEl.textContent = 'declined';
+      entry.segment.footerClass = 'failed';
+      entry.segment.footer = 'declined';
     } else {
-      entry.footerEl.className = 'log-footer failed';
-      entry.footerEl.textContent = `exit ${exitCode ?? '?'}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
+      entry.segment.footerClass = 'failed';
+      entry.segment.footer = `exit ${exitCode ?? '?'}${duration ? ` · ${(duration / 1000).toFixed(1)}s` : ''}`;
     }
   }
 
   if (normalizedType === 'fileChange' && item.changes && Array.isArray(item.changes)) {
-    if (entry.bodyEl && !entry.bodyEl.textContent.trim()) {
-      entry.bodyEl.textContent = item.changes.map((change) =>
+    if (!entry.segment.body.trim()) {
+      entry.segment.body = item.changes.map((change) =>
         `${change.kind}: ${change.path}\n${change.diff || ''}`
       ).join('\n\n');
     }
-    if (entry.metaEl) {
-      entry.metaEl.textContent = item.changes.map((change) => change.path).join(', ');
-    }
+    entry.segment.meta = item.changes.map((change) => change.path).join(', ');
   }
 
-  if (normalizedType === 'reasoning' && entry.metaEl) {
+  if (normalizedType === 'reasoning') {
     const summary = item.summary || '';
-    entry.metaEl.textContent = summary
+    entry.segment.meta = summary
       ? summary.slice(0, 80) + (summary.length > 80 ? '…' : '')
       : 'Background analysis';
   }
 
   activeItems.delete(itemId);
+  renderMessages();
+  scrollToLatest(entry.turnKey);
 }
 
 function onApprovalRequest(threadId, turnId, itemId, requestId, method, detail) {
-  const block = turnId ? ensureTurnBlock(threadId, turnId) : getCurrentTurnBlock();
-  if (!block) return;
+  const turn = turnId ? ensureTurn(threadId, turnId) : getCurrentTurn();
+  if (!turn) return;
 
   let description = '';
   let title = 'Permission required';
@@ -1863,83 +2351,61 @@ function onApprovalRequest(threadId, turnId, itemId, requestId, method, detail) 
     description = JSON.stringify(detail, null, 2);
   }
 
-  const section = addLogSection(block, 'approval', title, {
-    label: 'Approval',
-    body: description,
-    open: true,
+  makeSegment(turn, 'approval', {
+    requestId,
+    title,
+    description,
+    note: 'Choose how Codex should proceed.',
+    state: 'pending',
   });
-
-  const actions = document.createElement('div');
-  actions.className = 'approval-actions';
-  actions.innerHTML = `
-    <button class="btn-accept" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'accept')">Approve once</button>
-    <button class="btn-secondary" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'acceptForSession')">Approve for session</button>
-    <button class="btn-decline" type="button" onclick="sendApproval(this, ${JSON.stringify(JSON.stringify(requestId))}, 'decline')">Decline</button>
-  `;
-
-  if (section.bodyEl) {
-    section.bodyEl.appendChild(actions);
-  }
-
-  scrollToLatest(block);
+  renderMessages();
+  scrollToLatest(turn.key);
 }
 
 function completeTurn(threadId, turnId, status, error) {
-  const block = turnId ? turnBlocks.get(turnId) : getCurrentTurnBlock();
-  if (!block) return;
+  const turn = turnId ? turnById.get(turnId) : getCurrentTurn();
+  if (!turn) return;
 
   const normalized = normalizeTurnState(status);
-  updateTurnBlockState(block, normalized.state, normalized.label);
-  block.root.classList.remove('is-active');
+  updateTurnState(turn, normalized.state, normalized.label);
 
   if (normalized.state === 'failed' && error) {
     const errMsg = error.message || error.additionalDetails || JSON.stringify(error);
-    setInlineError(block, `Turn failed: ${errMsg}`);
+    turn.errorText = `Turn failed: ${errMsg}`;
   }
 
   if (turnId && turnId === currentTurnId) {
     setTurnActive(false);
     sendBtn.disabled = false;
   }
+
+  renderMessages();
+  scrollToLatest(turn.key);
 }
 
 function failCurrentTurn(errorText) {
-  const block = getCurrentTurnBlock();
-  if (!block) {
+  const turn = getCurrentTurn();
+  if (!turn) {
     addGlobalError(errorText);
     return;
   }
 
-  updateTurnBlockState(block, 'failed', 'Failed');
-  setInlineError(block, errorText);
-  block.root.classList.remove('is-active');
-  pendingTurnBlock = null;
+  updateTurnState(turn, 'failed', 'Failed');
+  turn.errorText = errorText;
+  pendingTurnKey = null;
+  renderMessages();
+  scrollToLatest(turn.key);
 }
 
 function finalizeActiveTurnsOnDisconnect() {
-  const seen = new Set();
-  const activeStates = new Set(['pending', 'running', 'stopping']);
-  const blocks = [];
-
-  if (pendingTurnBlock) {
-    blocks.push(pendingTurnBlock);
-  }
-
-  turnBlocks.forEach((block) => {
-    if (activeStates.has(block.root.dataset.state)) {
-      blocks.push(block);
-    }
+  turns.forEach((turn) => {
+    if (!isTurnActive(turn)) return;
+    updateTurnState(turn, 'interrupted', 'Disconnected');
+    turn.errorText = 'Connection was lost before the turn finished.';
   });
 
-  blocks.forEach((block) => {
-    if (!block || seen.has(block)) return;
-    seen.add(block);
-    updateTurnBlockState(block, 'interrupted', 'Disconnected');
-    setInlineError(block, 'Connection was lost before the turn finished.');
-    block.root.classList.remove('is-active');
-  });
-
-  pendingTurnBlock = null;
+  pendingTurnKey = null;
+  renderMessages();
 }
 
 function normalizeTurnState(status) {
@@ -1963,8 +2429,13 @@ function capitalize(text) {
 
 function stopTurn() {
   if (!currentThreadId || !currentTurnId) return;
-  const block = turnBlocks.get(currentTurnId) || getCurrentTurnBlock();
-  if (block) updateTurnBlockState(block, 'stopping', 'Stopping…');
+  const turn = turnById.get(currentTurnId) || getCurrentTurn();
+  if (turn) {
+    updateTurnState(turn, 'stopping', 'Stopping…');
+    renderMessages();
+    scrollToLatest(turn.key);
+  }
+
   ws.send(JSON.stringify({
     type: 'interrupt',
     thread_id: currentThreadId,
@@ -1972,18 +2443,37 @@ function stopTurn() {
   }));
 }
 
-function sendApproval(btn, requestIdStr, decision) {
-  const requestId = JSON.parse(requestIdStr);
-  const section = btn.closest('.log-section');
-  const buttons = section.querySelectorAll('button');
-  buttons.forEach((button) => {
-    button.disabled = true;
-    if (button !== btn) button.style.opacity = '0.42';
-  });
+function sendApproval(turnKey, segmentId, decision) {
+  const turn = turnByKey.get(turnKey);
+  if (!turn) return;
+
+  const segment = turn.segments.find((entry) => entry.id === segmentId && entry.kind === 'approval');
+  if (!segment || segment.state !== 'pending') return;
+
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    segment.note = 'Connection is offline. Reconnect before approving.';
+    renderMessages();
+    scrollToLatest(turn.key);
+    return;
+  }
+
+  if (decision === 'decline') {
+    segment.state = 'declined';
+    segment.note = 'Decline sent. Codex should stop at this gate.';
+  } else if (decision === 'acceptForSession') {
+    segment.state = 'sent';
+    segment.note = 'Session approval sent. Codex can keep going within this session.';
+  } else {
+    segment.state = 'sent';
+    segment.note = 'Approval sent. Waiting for Codex to continue.';
+  }
+
+  renderMessages();
+  scrollToLatest(turn.key);
 
   ws.send(JSON.stringify({
     type: 'approval_response',
-    request_id: requestId,
+    request_id: segment.requestId,
     decision,
   }));
 }
@@ -1992,7 +2482,7 @@ function sendMessage() {
   const text = promptEl.value.trim();
   if (!text || turnActive || !ws || ws.readyState !== WebSocket.OPEN) return;
 
-  createPendingTurnBlock(text);
+  createPendingTurn(text);
   promptEl.value = '';
   autoResize();
 
@@ -2015,27 +2505,26 @@ function sendMessage() {
 }
 
 function addSystemMsg(text) {
-  const div = document.createElement('div');
-  div.className = 'msg system';
-  div.textContent = text;
-  messagesEl.appendChild(div);
-  scrollToLatest();
+  addNotice('system', text);
 }
 
 function addGlobalError(text) {
   hideIntro();
-  const div = document.createElement('div');
-  div.className = 'msg error';
-  div.textContent = text;
-  messagesEl.appendChild(div);
-  scrollToLatest();
+  addNotice('error', text);
 }
 
-function scrollToLatest(block = null) {
-  if (block && block.root.classList.contains('is-active')) {
-    block.bodyEl.scrollTop = block.bodyEl.scrollHeight;
-  }
-  messagesEl.scrollTop = messagesEl.scrollHeight;
+function scrollToLatest(turnKey = null) {
+  requestAnimationFrame(() => {
+    if (turnKey) {
+      const root = messagesEl.querySelector(`[data-turn-key="${turnKey}"]`);
+      const body = root && root.querySelector('.turn-body');
+      if (body && root.classList.contains('is-active')) {
+        body.scrollTop = body.scrollHeight;
+      }
+    }
+
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
 }
 
 function escapeHtml(str) {
