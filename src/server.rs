@@ -1,8 +1,8 @@
-use axum::extract::ws::WebSocketUpgrade;
+use axum::Router;
 use axum::extract::State;
+use axum::extract::ws::WebSocketUpgrade;
 use axum::response::{Html, IntoResponse};
 use axum::routing::get;
-use axum::Router;
 use tokio::sync::{broadcast, mpsc};
 
 use crate::relay::channels::{FromCodexMessage, ToCodexMessage};

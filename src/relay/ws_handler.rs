@@ -73,10 +73,7 @@ async fn handle_browser_message(
     to_codex_tx: &mpsc::Sender<ToCodexMessage>,
 ) -> anyhow::Result<()> {
     let val: Value = serde_json::from_str(text)?;
-    let msg_type = val
-        .get("type")
-        .and_then(|v| v.as_str())
-        .unwrap_or_default();
+    let msg_type = val.get("type").and_then(|v| v.as_str()).unwrap_or_default();
 
     match msg_type {
         "start_turn" => {
@@ -97,11 +94,7 @@ async fn handle_browser_message(
                 .map(String::from);
 
             to_codex_tx
-                .send(ToCodexMessage::StartTurn {
-                    prompt,
-                    cwd,
-                    model,
-                })
+                .send(ToCodexMessage::StartTurn { prompt, cwd, model })
                 .await?;
             Ok(())
         }
@@ -123,10 +116,7 @@ async fn handle_browser_message(
             Ok(())
         }
         "approval_response" => {
-            let request_id = val
-                .get("request_id")
-                .cloned()
-                .unwrap_or(Value::Null);
+            let request_id = val.get("request_id").cloned().unwrap_or(Value::Null);
             let decision = val
                 .get("decision")
                 .and_then(|v| v.as_str())
@@ -154,10 +144,7 @@ async fn handle_browser_message(
                 .to_string();
 
             to_codex_tx
-                .send(ToCodexMessage::Interrupt {
-                    thread_id,
-                    turn_id,
-                })
+                .send(ToCodexMessage::Interrupt { thread_id, turn_id })
                 .await?;
             Ok(())
         }
@@ -168,60 +155,77 @@ async fn handle_browser_message(
 fn from_codex_to_json(msg: &FromCodexMessage) -> Value {
     match msg {
         FromCodexMessage::Ready => json!({ "type": "ready" }),
-        FromCodexMessage::TurnStarted {
-            thread_id,
-            turn_id,
-        } => json!({
+        FromCodexMessage::TurnStarted { thread_id, turn_id } => json!({
             "type": "turn_started",
             "thread_id": thread_id,
             "turn_id": turn_id,
         }),
         FromCodexMessage::ItemStarted {
+            thread_id,
+            turn_id,
             item_id,
             item_type,
             item,
         } => json!({
             "type": "item_started",
+            "thread_id": thread_id,
+            "turn_id": turn_id,
             "item_id": item_id,
             "item_type": item_type,
             "item": item,
         }),
         FromCodexMessage::Delta {
+            thread_id,
+            turn_id,
             item_id,
             delta_type,
             content,
         } => json!({
             "type": "delta",
+            "thread_id": thread_id,
+            "turn_id": turn_id,
             "item_id": item_id,
             "delta_type": delta_type,
             "content": content,
         }),
         FromCodexMessage::ItemCompleted {
+            thread_id,
+            turn_id,
             item_id,
             item_type,
             item,
         } => json!({
             "type": "item_completed",
+            "thread_id": thread_id,
+            "turn_id": turn_id,
             "item_id": item_id,
             "item_type": item_type,
             "item": item,
         }),
         FromCodexMessage::ApprovalRequest {
+            thread_id,
+            turn_id,
+            item_id,
             request_id,
             method,
             detail,
         } => json!({
             "type": "approval_request",
+            "thread_id": thread_id,
+            "turn_id": turn_id,
+            "item_id": item_id,
             "request_id": request_id,
             "method": method,
             "detail": detail,
         }),
         FromCodexMessage::TurnCompleted {
+            thread_id,
             turn_id,
             status,
             error,
         } => json!({
             "type": "turn_completed",
+            "thread_id": thread_id,
             "turn_id": turn_id,
             "status": status,
             "error": error,
@@ -231,5 +235,49 @@ fn from_codex_to_json(msg: &FromCodexMessage) -> Value {
             "error": error,
         }),
         FromCodexMessage::Disconnected => json!({ "type": "disconnected" }),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use serde_json::json;
+
+    use super::from_codex_to_json;
+    use crate::relay::channels::FromCodexMessage;
+
+    #[test]
+    fn item_events_include_turn_and_thread_ids() {
+        let message = FromCodexMessage::ItemStarted {
+            thread_id: "thread-1".to_string(),
+            turn_id: "turn-1".to_string(),
+            item_id: "item-1".to_string(),
+            item_type: "agentMessage".to_string(),
+            item: json!({"id": "item-1", "type": "agentMessage"}),
+        };
+
+        let payload = from_codex_to_json(&message);
+
+        assert_eq!(payload["thread_id"], "thread-1");
+        assert_eq!(payload["turn_id"], "turn-1");
+        assert_eq!(payload["item_id"], "item-1");
+    }
+
+    #[test]
+    fn approval_requests_include_routing_fields() {
+        let message = FromCodexMessage::ApprovalRequest {
+            thread_id: "thread-9".to_string(),
+            turn_id: "turn-9".to_string(),
+            item_id: "item-9".to_string(),
+            request_id: json!("req-9"),
+            method: "item/commandExecution/requestApproval".to_string(),
+            detail: json!({"command": "ls"}),
+        };
+
+        let payload = from_codex_to_json(&message);
+
+        assert_eq!(payload["thread_id"], "thread-9");
+        assert_eq!(payload["turn_id"], "turn-9");
+        assert_eq!(payload["item_id"], "item-9");
+        assert_eq!(payload["request_id"], "req-9");
     }
 }

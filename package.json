@@ -1,0 +1,11 @@
+{
+  "name": "codex-rc-ui-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:ui": "node scripts/ui_test_runner.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^28.1.0"
+  }
+}

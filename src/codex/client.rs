@@ -53,10 +53,7 @@ enum PendingRequest {
     TurnInterrupt,
 }
 
-async fn write_msg(
-    stdin: &mut BufWriter<tokio::process::ChildStdin>,
-    msg: &Value,
-) -> Result<()> {
+async fn write_msg(stdin: &mut BufWriter<tokio::process::ChildStdin>, msg: &Value) -> Result<()> {
     let s = serde_json::to_string(msg)?;
     debug!("-> codex: {s}");
     stdin.write_all(s.as_bytes()).await?;
@@ -190,11 +187,7 @@ impl CodexClient {
 
     async fn handle_to_codex(&mut self, msg: ToCodexMessage) -> Result<()> {
         match msg {
-            ToCodexMessage::StartTurn {
-                prompt,
-                cwd,
-                model,
-            } => {
+            ToCodexMessage::StartTurn { prompt, cwd, model } => {
                 // Create a new thread first, then start a turn
                 let id = next_id();
                 let params = thread_start_params(cwd.as_deref(), model.as_deref());
@@ -203,19 +196,11 @@ impl CodexClient {
                     "id": id,
                     "params": params,
                 });
-                self.pending_requests.insert(
-                    id,
-                    PendingRequest::ThreadStart {
-                        prompt,
-                        model,
-                    },
-                );
+                self.pending_requests
+                    .insert(id, PendingRequest::ThreadStart { prompt, model });
                 write_msg(&mut self.stdin, &req).await?;
             }
-            ToCodexMessage::Reply {
-                thread_id,
-                prompt,
-            } => {
+            ToCodexMessage::Reply { thread_id, prompt } => {
                 let id = next_id();
                 let req = json!({
                     "method": "turn/start",
@@ -240,10 +225,7 @@ impl CodexClient {
                 self.pending_approvals.remove(&request_id.to_string());
                 write_msg(&mut self.stdin, &resp).await?;
             }
-            ToCodexMessage::Interrupt {
-                thread_id,
-                turn_id,
-            } => {
+            ToCodexMessage::Interrupt { thread_id, turn_id } => {
                 let id = next_id();
                 let req = json!({
                     "method": "turn/interrupt",
@@ -253,7 +235,8 @@ impl CodexClient {
                         "turnId": turn_id,
                     }
                 });
-                self.pending_requests.insert(id, PendingRequest::TurnInterrupt);
+                self.pending_requests
+                    .insert(id, PendingRequest::TurnInterrupt);
                 write_msg(&mut self.stdin, &req).await?;
             }
         }
@@ -286,11 +269,25 @@ impl CodexClient {
         let request_id = val.get("id").cloned().unwrap_or(Value::Null);
 
         match method {
-            "item/commandExecution/requestApproval"
-            | "item/fileChange/requestApproval" => {
+            "item/commandExecution/requestApproval" | "item/fileChange/requestApproval" => {
                 self.pending_approvals
                     .insert(request_id.to_string(), request_id.clone());
                 let _ = self.from_codex_tx.send(FromCodexMessage::ApprovalRequest {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    item_id: params
+                        .get("itemId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     request_id,
                     method: method.to_string(),
                     detail: params,
@@ -335,6 +332,11 @@ impl CodexClient {
                     .to_string();
                 let error = turn.get("error").cloned();
                 let _ = self.from_codex_tx.send(FromCodexMessage::TurnCompleted {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     turn_id: turn
                         .get("id")
                         .and_then(|v| v.as_str())
@@ -347,6 +349,16 @@ impl CodexClient {
             "item/started" => {
                 let item = &params["item"];
                 let _ = self.from_codex_tx.send(FromCodexMessage::ItemStarted {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: item
                         .get("id")
                         .and_then(|v| v.as_str())
@@ -363,6 +375,16 @@ impl CodexClient {
             "item/completed" => {
                 let item = &params["item"];
                 let _ = self.from_codex_tx.send(FromCodexMessage::ItemCompleted {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: item
                         .get("id")
                         .and_then(|v| v.as_str())
@@ -378,6 +400,16 @@ impl CodexClient {
             }
             "item/agentMessage/delta" => {
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -393,6 +425,16 @@ impl CodexClient {
             }
             "item/reasoning/summaryTextDelta" | "item/reasoning/textDelta" => {
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -408,6 +450,16 @@ impl CodexClient {
             }
             "item/commandExecution/outputDelta" => {
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -423,6 +475,16 @@ impl CodexClient {
             }
             "item/fileChange/outputDelta" => {
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -438,6 +500,16 @@ impl CodexClient {
             }
             "item/plan/delta" => {
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
+                    thread_id: params
+                        .get("threadId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
+                    turn_id: params
+                        .get("turnId")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or_default()
+                        .to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -451,9 +523,12 @@ impl CodexClient {
                         .to_string(),
                 });
             }
-            "thread/status/changed" | "thread/tokenUsage/updated"
-            | "turn/diff/updated" | "turn/plan/updated"
-            | "item/reasoning/summaryPartAdded" | "thread/started"
+            "thread/status/changed"
+            | "thread/tokenUsage/updated"
+            | "turn/diff/updated"
+            | "turn/plan/updated"
+            | "item/reasoning/summaryPartAdded"
+            | "thread/started"
             | "serverRequest/resolved" => {
                 // Known but not directly relayed to browser
                 debug!("Notification (ignored): {method}");
@@ -465,10 +540,7 @@ impl CodexClient {
     }
 
     async fn handle_response(&mut self, val: &Value) -> Result<()> {
-        let id = val
-            .get("id")
-            .and_then(|v| v.as_u64())
-            .unwrap_or_default();
+        let id = val.get("id").and_then(|v| v.as_u64()).unwrap_or_default();
 
         let pending = match self.pending_requests.remove(&id) {
             Some(p) => p,
@@ -524,7 +596,8 @@ impl CodexClient {
                     "id": turn_id,
                     "params": turn_params,
                 });
-                self.pending_requests.insert(turn_id, PendingRequest::TurnStart);
+                self.pending_requests
+                    .insert(turn_id, PendingRequest::TurnStart);
                 write_msg(&mut self.stdin, &req).await?;
             }
             PendingRequest::TurnStart => {

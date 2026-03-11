@@ -6,32 +6,198 @@
 <title>Codex RC</title>
 <style>
   :root {
+    color-scheme: light;
     --bg: #f2eee7;
     --bg-accent: rgba(188, 180, 166, 0.22);
+    --bg-secondary: rgba(225, 208, 179, 0.2);
+    --bg-gradient-start: #f7f3ec;
+    --bg-gradient-end: #f2eee7;
     --surface: rgba(255, 252, 247, 0.72);
     --surface-strong: rgba(255, 255, 255, 0.9);
     --surface-muted: rgba(255, 255, 255, 0.58);
+    --surface-emphasis: rgba(255, 255, 255, 0.78);
     --line: rgba(28, 28, 28, 0.08);
     --line-strong: rgba(28, 28, 28, 0.14);
     --text: #181818;
     --text-muted: #6e6a64;
     --text-soft: #8c877f;
     --accent: #151515;
+    --accent-alt: #6f8f84;
     --accent-soft: #ece4d8;
     --success: #2f6d54;
     --danger: #9d3d3d;
     --warning: #8f6632;
     --shadow: 0 20px 48px rgba(36, 30, 24, 0.08);
+    --inner-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    --glow: 0 0 0 0.35rem rgba(21, 21, 21, 0.08);
+    --panel-radius: 1.75rem;
+    --section-radius: 1.5rem;
+    --card-radius: 1.65rem;
+    --button-radius: 1.25rem;
+    --app-width: 54rem;
+    --panel-blur: blur(18px);
+    --focus-ring: rgba(21, 21, 21, 0.18);
+    --turn-head-bg: rgba(255, 255, 255, 0.78);
+    --log-bg: rgba(255, 255, 255, 0.34);
+    --approval-bg: rgba(250, 245, 235, 0.94);
+    --approval-border: rgba(143, 102, 50, 0.16);
+    --error-bg: rgba(255, 241, 239, 0.95);
+    --error-border: rgba(157, 61, 61, 0.14);
+    --turn-running-bg: var(--accent-soft);
+    --turn-complete-bg: rgba(234, 245, 239, 0.9);
+    --turn-failed-bg: rgba(255, 244, 242, 0.95);
+    --theme-track-bg: rgba(255, 255, 255, 0.74);
+    --theme-pill-text: var(--text-muted);
+    --theme-pill-active-bg: var(--accent);
+    --theme-pill-active-text: #fff;
+    --send-bg: linear-gradient(135deg, var(--accent) 0%, #2b2b2b 100%);
+    --send-shadow: none;
+    --status-connected: #6f8f84;
+    --status-ready: var(--success);
+    --status-working: var(--accent);
+    --status-offline: var(--danger);
+    --body-overlay:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 10rem),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.25), transparent 22rem);
+    --body-pattern: none;
+    --body-pattern-size: auto;
+    --body-pattern-opacity: 0;
+    --body-pattern-blend: normal;
+    --topbar-radius: var(--panel-radius);
+    --surface-radius: var(--section-radius);
+    --composer-radius: var(--panel-radius);
+    --message-font: var(--sans);
     --mono: "SF Mono", "IBM Plex Mono", "Cascadia Code", monospace;
     --sans: "Avenir Next", "Segoe UI", sans-serif;
     --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  }
+
+  body[data-theme="warp"] {
+    color-scheme: dark;
+    --bg: #120f1e;
+    --bg-accent: rgba(132, 105, 255, 0.26);
+    --bg-secondary: rgba(255, 138, 94, 0.18);
+    --bg-gradient-start: #181126;
+    --bg-gradient-end: #090811;
+    --surface: rgba(20, 18, 32, 0.72);
+    --surface-strong: rgba(29, 25, 46, 0.92);
+    --surface-muted: rgba(22, 18, 35, 0.88);
+    --surface-emphasis: rgba(33, 28, 52, 0.92);
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --text: #f6f3ff;
+    --text-muted: #c9c4dc;
+    --text-soft: #948cab;
+    --accent: #8b6cff;
+    --accent-alt: #ff8a5c;
+    --accent-soft: rgba(139, 108, 255, 0.18);
+    --success: #45d4ad;
+    --danger: #ff7b94;
+    --warning: #ffbf72;
+    --shadow: 0 24px 64px rgba(3, 2, 9, 0.5);
+    --inner-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    --glow: 0 0 0 0.35rem rgba(139, 108, 255, 0.14);
+    --app-width: 58rem;
+    --focus-ring: rgba(139, 108, 255, 0.35);
+    --turn-head-bg: linear-gradient(135deg, rgba(139, 108, 255, 0.16), rgba(255, 138, 92, 0.1));
+    --log-bg: rgba(13, 10, 22, 0.72);
+    --approval-bg: rgba(42, 30, 20, 0.72);
+    --approval-border: rgba(255, 191, 114, 0.16);
+    --error-bg: rgba(63, 24, 35, 0.8);
+    --error-border: rgba(255, 123, 148, 0.24);
+    --turn-running-bg: rgba(139, 108, 255, 0.18);
+    --turn-complete-bg: rgba(20, 64, 54, 0.62);
+    --turn-failed-bg: rgba(63, 24, 35, 0.78);
+    --theme-track-bg: rgba(11, 9, 18, 0.88);
+    --theme-pill-text: #bfb6d8;
+    --theme-pill-active-bg: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+    --send-bg: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+    --send-shadow: 0 16px 28px rgba(139, 108, 255, 0.28);
+    --status-connected: #8dbdff;
+    --status-working: #ffab7b;
+    --body-overlay:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 10rem),
+      radial-gradient(circle at top left, rgba(139, 108, 255, 0.3), transparent 28rem),
+      radial-gradient(circle at 85% 15%, rgba(255, 138, 92, 0.22), transparent 22rem);
+    --body-pattern: radial-gradient(circle, rgba(255, 255, 255, 0.72) 0 0.85px, transparent 1px);
+    --body-pattern-size: 18px 18px;
+    --body-pattern-opacity: 0.08;
+    --body-pattern-blend: screen;
+    --sans: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", "SF Mono", "IBM Plex Mono", "Cascadia Code", monospace;
+    --serif: "Canela", "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  }
+
+  body[data-theme="shell"] {
+    color-scheme: dark;
+    --bg: #0b1016;
+    --bg-accent: rgba(55, 148, 255, 0.16);
+    --bg-secondary: rgba(35, 209, 139, 0.14);
+    --bg-gradient-start: #10161f;
+    --bg-gradient-end: #05070b;
+    --surface: rgba(12, 17, 24, 0.92);
+    --surface-strong: rgba(16, 21, 31, 0.98);
+    --surface-muted: rgba(10, 14, 21, 0.92);
+    --surface-emphasis: rgba(13, 18, 27, 0.98);
+    --line: rgba(148, 163, 184, 0.14);
+    --line-strong: rgba(148, 163, 184, 0.24);
+    --text: #e6edf3;
+    --text-muted: #a1b2c4;
+    --text-soft: #6d8094;
+    --accent: #3794ff;
+    --accent-alt: #23d18b;
+    --accent-soft: rgba(55, 148, 255, 0.16);
+    --success: #23d18b;
+    --danger: #f14c4c;
+    --warning: #cca700;
+    --shadow: 0 26px 72px rgba(0, 0, 0, 0.42);
+    --inner-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    --glow: 0 0 0 0.35rem rgba(55, 148, 255, 0.14);
+    --app-width: 72rem;
+    --focus-ring: rgba(55, 148, 255, 0.42);
+    --turn-head-bg: linear-gradient(180deg, rgba(18, 24, 36, 0.98), rgba(11, 15, 22, 0.96));
+    --log-bg: rgba(6, 9, 14, 0.86);
+    --approval-bg: rgba(24, 22, 10, 0.92);
+    --approval-border: rgba(204, 167, 0, 0.22);
+    --error-bg: rgba(47, 18, 18, 0.92);
+    --error-border: rgba(241, 76, 76, 0.26);
+    --turn-running-bg: rgba(55, 148, 255, 0.18);
+    --turn-complete-bg: rgba(11, 49, 34, 0.92);
+    --turn-failed-bg: rgba(47, 18, 18, 0.92);
+    --theme-track-bg: rgba(5, 8, 12, 0.96);
+    --theme-pill-text: #9ab0c7;
+    --theme-pill-active-bg: linear-gradient(180deg, rgba(55, 148, 255, 0.2), rgba(55, 148, 255, 0.34));
+    --theme-pill-active-text: #eef6ff;
+    --send-bg: linear-gradient(135deg, var(--accent) 0%, #5db1ff 100%);
+    --send-shadow: 0 12px 24px rgba(55, 148, 255, 0.22);
+    --status-connected: #5db1ff;
+    --status-working: #23d18b;
+    --body-overlay:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 12rem),
+      radial-gradient(circle at top left, rgba(55, 148, 255, 0.18), transparent 26rem);
+    --body-pattern:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 7rem);
+    --body-pattern-size: 18px 18px, 18px 18px, 100% 100%;
+    --body-pattern-opacity: 0.16;
+    --body-pattern-blend: normal;
+    --topbar-radius: 1.1rem;
+    --surface-radius: 1rem;
+    --card-radius: 1rem;
+    --composer-radius: 1rem;
+    --message-font: var(--mono);
+    --sans: "IBM Plex Sans", "Segoe UI", sans-serif;
+    --mono: "Cascadia Code", "JetBrains Mono", "SF Mono", "IBM Plex Mono", monospace;
+    --serif: "IBM Plex Sans", "Segoe UI", sans-serif;
   }
 
   * {
     box-sizing: border-box;
   }
 
-  html, body {
+  html,
+  body {
     min-height: 100%;
   }
 
@@ -41,18 +207,28 @@
     font-family: var(--sans);
     background:
       radial-gradient(circle at top left, var(--bg-accent), transparent 34rem),
-      linear-gradient(180deg, #f7f3ec 0%, var(--bg) 100%);
+      radial-gradient(circle at 85% 10%, var(--bg-secondary), transparent 26rem),
+      linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     -webkit-text-size-adjust: 100%;
   }
 
-  body::before {
+  body::before,
+  body::after {
     content: "";
     position: fixed;
     inset: 0;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 10rem),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.25), transparent 22rem);
     pointer-events: none;
+  }
+
+  body::before {
+    background: var(--body-overlay);
+  }
+
+  body::after {
+    background-image: var(--body-pattern);
+    background-size: var(--body-pattern-size);
+    opacity: var(--body-pattern-opacity);
+    mix-blend-mode: var(--body-pattern-blend);
   }
 
   button,
@@ -66,10 +242,30 @@
     touch-action: manipulation;
   }
 
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 4;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: var(--surface-strong);
+    color: var(--text);
+    border: 1px solid var(--line);
+    transform: translateY(-160%);
+    transition: transform 180ms ease;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
   .app-shell {
     position: relative;
     z-index: 1;
-    width: min(100%, 54rem);
+    width: min(100%, var(--app-width));
     min-height: 100dvh;
     margin: 0 auto;
     padding: 1rem 0.875rem 1.25rem;
@@ -80,15 +276,18 @@
 
   .topbar,
   .session-strip,
-  .composer-shell {
+  .composer-shell,
+  .intro {
+    position: relative;
+    overflow: hidden;
     border: 1px solid var(--line);
     background: var(--surface);
-    backdrop-filter: blur(18px);
-    box-shadow: var(--shadow);
+    backdrop-filter: var(--panel-blur);
+    box-shadow: var(--shadow), var(--inner-shadow);
   }
 
   .topbar {
-    border-radius: 1.75rem;
+    border-radius: var(--topbar-radius);
     padding: 1rem 1.125rem;
     display: flex;
     align-items: center;
@@ -108,7 +307,7 @@
     height: 0.85rem;
     border-radius: 999px;
     background: var(--accent);
-    box-shadow: 0 0 0 0.35rem rgba(21, 21, 21, 0.08);
+    box-shadow: var(--glow);
     flex: none;
   }
 
@@ -138,15 +337,67 @@
     gap: 0.625rem;
   }
 
+  .theme-switcher,
   .status-chip {
     min-height: 2.75rem;
+    border: 1px solid var(--line);
+    background: var(--surface-strong);
+    box-shadow: var(--inner-shadow);
+  }
+
+  .theme-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.3rem 0.35rem 0.3rem 0.85rem;
+    border-radius: 999px;
+  }
+
+  .theme-switcher-label {
+    color: var(--text-soft);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .theme-switcher-options {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22rem;
+    padding: 0.2rem;
+    border-radius: 999px;
+    background: var(--theme-track-bg);
+  }
+
+  .theme-option {
+    min-height: 2rem;
+    padding: 0 0.8rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--theme-pill-text);
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: background 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .theme-option[data-active="true"] {
+    background: var(--theme-pill-active-bg);
+    color: var(--theme-pill-active-text);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .theme-option:not([data-active="true"]):hover {
+    transform: translateY(-1px);
+  }
+
+  .status-chip {
     padding: 0 0.9rem;
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
     border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--surface-strong);
     color: var(--text-muted);
     font-size: 0.82rem;
     white-space: nowrap;
@@ -170,29 +421,29 @@
   }
 
   .status-chip[data-state="connected"] .status-dot {
-    background: #6f8f84;
+    background: var(--status-connected);
   }
 
   .status-chip[data-state="ready"] .status-dot {
-    background: var(--success);
+    background: var(--status-ready);
   }
 
   .status-chip[data-state="working"] .status-dot {
-    background: var(--accent);
+    background: var(--status-working);
     transform: scale(1.2);
   }
 
   .status-chip[data-state="offline"] .status-dot {
-    background: var(--danger);
+    background: var(--status-offline);
   }
 
   #stopBtn {
     display: none;
     min-height: 2.75rem;
     padding: 0 1rem;
-    border: 1px solid rgba(157, 61, 61, 0.18);
+    border: 1px solid color-mix(in srgb, var(--danger) 22%, transparent);
     border-radius: 999px;
-    background: rgba(255, 246, 244, 0.9);
+    background: color-mix(in srgb, var(--error-bg) 92%, transparent);
     color: var(--danger);
   }
 
@@ -203,7 +454,7 @@
   }
 
   .session-strip {
-    border-radius: 1.5rem;
+    border-radius: var(--surface-radius);
     padding: 1rem 1.125rem;
     display: grid;
     gap: 0.875rem;
@@ -215,6 +466,12 @@
     gap: 0.75rem;
     align-items: center;
     flex-wrap: wrap;
+  }
+
+  .session-meta-copy {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
   }
 
   .meta-block {
@@ -234,6 +491,7 @@
     margin: 0;
     font-size: 0.92rem;
     color: var(--text-muted);
+    max-width: 30rem;
   }
 
   .thread-pill {
@@ -316,11 +574,13 @@
   .options-grid input:focus,
   #prompt:focus,
   #send:focus-visible,
+  .theme-option:focus-visible,
   .turn-details summary:focus-visible,
   .approval-actions button:focus-visible,
   .session-panel summary:focus-visible,
-  #stopBtn:focus-visible {
-    outline: 2px solid rgba(21, 21, 21, 0.18);
+  #stopBtn:focus-visible,
+  .skip-link:focus-visible {
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
   }
 
@@ -332,12 +592,8 @@
   }
 
   .intro {
-    border: 1px solid var(--line);
-    border-radius: 1.85rem;
+    border-radius: calc(var(--surface-radius) + 0.35rem);
     padding: 1.5rem 1.4rem;
-    background: var(--surface);
-    backdrop-filter: blur(18px);
-    box-shadow: var(--shadow);
   }
 
   .intro.hidden {
@@ -364,7 +620,7 @@
   }
 
   .intro-copy {
-    max-width: 34rem;
+    max-width: 38rem;
     color: var(--text-muted);
     font-size: 0.98rem;
     line-height: 1.7;
@@ -387,28 +643,29 @@
   }
 
   .turn-card {
+    position: relative;
     border: 1px solid var(--line);
-    border-radius: 1.65rem;
+    border-radius: var(--card-radius);
     background: var(--surface-strong);
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow), var(--inner-shadow);
     overflow: hidden;
   }
 
   .turn-card[data-state="pending"],
   .turn-card[data-state="running"],
   .turn-card[data-state="stopping"] {
-    border-color: rgba(21, 21, 21, 0.14);
+    border-color: color-mix(in srgb, var(--accent) 18%, var(--line));
   }
 
   .turn-card[data-state="failed"],
   .turn-card[data-state="interrupted"] {
-    border-color: rgba(157, 61, 61, 0.18);
+    border-color: color-mix(in srgb, var(--danger) 22%, var(--line));
   }
 
   .turn-head {
     padding: 1rem 1.05rem 0.95rem;
     border-bottom: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.78);
+    background: var(--turn-head-bg);
     backdrop-filter: blur(14px);
   }
 
@@ -435,7 +692,7 @@
     align-items: center;
     border-radius: 999px;
     border: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.78);
+    background: var(--surface-emphasis);
     color: var(--text-muted);
     font-size: 0.76rem;
     white-space: nowrap;
@@ -444,18 +701,23 @@
   .turn-card[data-state="running"] .turn-status,
   .turn-card[data-state="stopping"] .turn-status {
     color: var(--text);
-    background: var(--accent-soft);
+    background: var(--turn-running-bg);
   }
 
   .turn-card[data-state="completed"] .turn-status {
     color: var(--success);
-    background: rgba(234, 245, 239, 0.9);
+    background: var(--turn-complete-bg);
   }
 
   .turn-card[data-state="failed"] .turn-status,
   .turn-card[data-state="interrupted"] .turn-status {
     color: var(--danger);
-    background: rgba(255, 244, 242, 0.95);
+    background: var(--turn-failed-bg);
+  }
+
+  .turn-prompt,
+  .turn-answer {
+    font-family: var(--message-font);
   }
 
   .turn-prompt {
@@ -499,9 +761,9 @@
     margin-top: 0.85rem;
     padding: 0.85rem 0.95rem;
     border-radius: 1rem;
-    border: 1px solid rgba(157, 61, 61, 0.14);
-    background: rgba(255, 241, 239, 0.95);
-    color: #7a1e1e;
+    border: 1px solid var(--error-border);
+    background: var(--error-bg);
+    color: color-mix(in srgb, var(--danger) 78%, var(--text) 22%);
     font-size: 0.88rem;
     line-height: 1.6;
     white-space: pre-wrap;
@@ -581,7 +843,7 @@
     color: var(--text-muted);
     white-space: pre-wrap;
     font-family: var(--mono);
-    background: rgba(255, 255, 255, 0.34);
+    background: var(--log-bg);
   }
 
   .log-footer {
@@ -599,8 +861,8 @@
   }
 
   .log-section.approval {
-    background: rgba(250, 245, 235, 0.94);
-    border-color: rgba(143, 102, 50, 0.16);
+    background: var(--approval-bg);
+    border-color: var(--approval-border);
   }
 
   .approval-actions {
@@ -621,7 +883,7 @@
 
   .btn-accept {
     background: var(--accent);
-    border-color: var(--accent);
+    border-color: transparent;
     color: #fff;
   }
 
@@ -631,8 +893,8 @@
 
   .btn-decline {
     color: var(--danger);
-    border-color: rgba(157, 61, 61, 0.16);
-    background: rgba(255, 250, 249, 0.82);
+    border-color: color-mix(in srgb, var(--danger) 16%, transparent);
+    background: color-mix(in srgb, var(--error-bg) 84%, transparent);
   }
 
   .msg.system {
@@ -648,9 +910,9 @@
   .msg.error {
     padding: 0.85rem 0.95rem;
     border-radius: 1.2rem;
-    background: rgba(255, 241, 239, 0.95);
-    border: 1px solid rgba(157, 61, 61, 0.14);
-    color: #7a1e1e;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: color-mix(in srgb, var(--danger) 78%, var(--text) 22%);
     font-size: 0.88rem;
     line-height: 1.6;
   }
@@ -658,7 +920,7 @@
   .composer-shell {
     position: sticky;
     bottom: 0.75rem;
-    border-radius: 1.75rem;
+    border-radius: var(--composer-radius);
     padding: 0.9rem;
   }
 
@@ -691,19 +953,25 @@
     width: 3.5rem;
     min-height: 3.5rem;
     border: 0;
-    border-radius: 1.25rem;
-    background: var(--accent);
+    border-radius: var(--button-radius);
+    background: var(--send-bg);
     color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     flex: none;
-    transition: transform 180ms ease, opacity 180ms ease;
+    box-shadow: var(--send-shadow);
+    transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+  }
+
+  #send:hover:not(:disabled) {
+    transform: translateY(-1px);
   }
 
   #send:disabled {
     opacity: 0.34;
     transform: none;
+    box-shadow: none;
     cursor: not-allowed;
   }
 
@@ -717,6 +985,95 @@
     margin: 0.65rem 0.15rem 0;
     color: var(--text-soft);
     font-size: 0.76rem;
+  }
+
+  body[data-theme="warp"] .topbar,
+  body[data-theme="warp"] .session-strip,
+  body[data-theme="warp"] .composer-shell,
+  body[data-theme="warp"] .intro,
+  body[data-theme="warp"] .turn-card {
+    backdrop-filter: blur(20px) saturate(135%);
+  }
+
+  body[data-theme="warp"] .brand-mark {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-alt) 100%);
+  }
+
+  body[data-theme="warp"] .turn-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), var(--accent-alt), transparent);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  body[data-theme="warp"] .intro h2 {
+    font-family: var(--sans);
+    font-weight: 600;
+    line-height: 1.05;
+  }
+
+  body[data-theme="shell"] .topbar,
+  body[data-theme="shell"] .session-strip,
+  body[data-theme="shell"] .composer-shell,
+  body[data-theme="shell"] .intro {
+    background: linear-gradient(180deg, rgba(18, 24, 36, 0.98), rgba(11, 15, 22, 0.96));
+  }
+
+  body[data-theme="shell"] .brand-mark {
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-right: 2rem;
+    background: #ff5f57;
+    box-shadow:
+      1rem 0 0 #febc2e,
+      2rem 0 0 #28c840;
+  }
+
+  body[data-theme="shell"] .theme-switcher,
+  body[data-theme="shell"] .status-chip,
+  body[data-theme="shell"] .thread-pill,
+  body[data-theme="shell"] .turn-status,
+  body[data-theme="shell"] .approval-actions button {
+    border-radius: 0.85rem;
+  }
+
+  body[data-theme="shell"] .theme-switcher-options,
+  body[data-theme="shell"] .theme-option {
+    border-radius: 0.7rem;
+  }
+
+  body[data-theme="shell"] .meta-label,
+  body[data-theme="shell"] .turn-label,
+  body[data-theme="shell"] .log-kind,
+  body[data-theme="shell"] .intro-kicker,
+  body[data-theme="shell"] .composer-hint,
+  body[data-theme="shell"] .theme-switcher-label,
+  body[data-theme="shell"] .turn-details summary,
+  body[data-theme="shell"] .session-panel summary {
+    font-family: var(--mono);
+  }
+
+  body[data-theme="shell"] .intro h2 {
+    font-family: var(--mono);
+    font-size: clamp(1.55rem, 4.8vw, 2.45rem);
+    font-weight: 600;
+    line-height: 1.08;
+  }
+
+  body[data-theme="shell"] .turn-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent);
+    pointer-events: none;
+  }
+
+  body[data-theme="shell"] .turn-card.is-active .turn-body {
+    max-height: min(60vh, 34rem);
   }
 
   @keyframes rise {
@@ -744,6 +1101,13 @@
       border-radius: 1.45rem;
     }
 
+    body[data-theme="shell"] .topbar,
+    body[data-theme="shell"] .session-strip,
+    body[data-theme="shell"] .composer-shell,
+    body[data-theme="shell"] .turn-card {
+      border-radius: 1rem;
+    }
+
     .topbar {
       padding: 0.95rem 1rem;
       align-items: flex-start;
@@ -753,6 +1117,28 @@
     .header-actions {
       width: 100%;
       justify-content: space-between;
+    }
+
+    .theme-switcher {
+      width: 100%;
+      justify-content: center;
+      padding-inline: 0.4rem;
+    }
+
+    .theme-switcher-label {
+      display: none;
+    }
+
+    .theme-switcher-options {
+      width: 100%;
+    }
+
+    .theme-option {
+      flex: 1 1 0;
+    }
+
+    .session-meta-copy {
+      gap: 0.9rem;
     }
 
     .composer-shell {
@@ -779,7 +1165,8 @@
   }
 </style>
 </head>
-<body>
+<body data-theme="paper">
+<a class="skip-link" href="#mainContent">Skip to conversation</a>
 <div class="app-shell">
   <header class="topbar">
     <div class="brand">
@@ -790,6 +1177,14 @@
       </div>
     </div>
     <div class="header-actions">
+      <div class="theme-switcher" role="group" aria-label="Theme switcher">
+        <span class="theme-switcher-label">Theme</span>
+        <div class="theme-switcher-options">
+          <button class="theme-option" type="button" data-theme-option="paper" data-active="true" aria-pressed="true" aria-label="Switch to Paper theme">Paper</button>
+          <button class="theme-option" type="button" data-theme-option="warp" data-active="false" aria-pressed="false" aria-label="Switch to Warp palette theme">Warp</button>
+          <button class="theme-option" type="button" data-theme-option="shell" data-active="false" aria-pressed="false" aria-label="Switch to Web Shell theme">Shell</button>
+        </div>
+      </div>
       <div class="status-chip" id="statusChip" data-state="connecting">
         <span class="status-dot" id="statusDot"></span>
         <span id="statusLabel">Connecting</span>
@@ -800,9 +1195,15 @@
 
   <section class="session-strip">
     <div class="session-meta">
-      <div class="meta-block">
-        <p class="meta-label">Session</p>
-        <p class="meta-value">One prompt, one response block, expandable work log.</p>
+      <div class="session-meta-copy">
+        <div class="meta-block">
+          <p class="meta-label">Session</p>
+          <p class="meta-value">One prompt, one response block, expandable work log.</p>
+        </div>
+        <div class="meta-block">
+          <p class="meta-label">Theme</p>
+          <p class="meta-value" id="themeSummary">Paper · warm paper surfaces and calm prompt-to-answer pacing.</p>
+        </div>
       </div>
       <span class="thread-pill" id="threadId">new session</span>
     </div>
@@ -822,11 +1223,11 @@
     </details>
   </section>
 
-  <main class="conversation">
+  <main class="conversation" id="mainContent">
     <section class="intro" id="intro">
-      <p class="intro-kicker">Turn Blocks</p>
-      <h2>Each prompt stays anchored while Codex streams underneath.</h2>
-      <p class="intro-copy">
+      <p class="intro-kicker" id="introKicker">Turn Blocks</p>
+      <h2 id="introTitle">Each prompt stays anchored while Codex streams underneath.</h2>
+      <p class="intro-copy" id="introCopy">
         Send a prompt and watch one dedicated response block grow in place. Final output stays readable first, while commands, diffs, approvals, and reasoning live in a folded work log.
       </p>
     </section>
@@ -850,24 +1251,98 @@
 <script>
 const messagesEl = document.getElementById('messages');
 const introEl = document.getElementById('intro');
+const introKickerEl = document.getElementById('introKicker');
+const introTitleEl = document.getElementById('introTitle');
+const introCopyEl = document.getElementById('introCopy');
 const promptEl = document.getElementById('prompt');
 const sendBtn = document.getElementById('send');
 const statusChipEl = document.getElementById('statusChip');
 const statusLabelEl = document.getElementById('statusLabel');
 const threadIdEl = document.getElementById('threadId');
+const themeSummaryEl = document.getElementById('themeSummary');
+const themeButtons = Array.from(document.querySelectorAll('[data-theme-option]'));
 const cwdEl = document.getElementById('cwd');
 const modelEl = document.getElementById('model');
 const stopBtn = document.getElementById('stopBtn');
+
+const THEME_STORAGE_KEY = 'codex-rc-theme';
+const THEMES = {
+  paper: {
+    summary: 'Paper · warm paper surfaces and calm prompt-to-answer pacing.',
+    kicker: 'Turn Blocks',
+    title: 'Each prompt stays anchored while Codex streams underneath.',
+    copy: 'Send a prompt and watch one dedicated response block grow in place. Final output stays readable first, while commands, diffs, approvals, and reasoning live in a folded work log.',
+  },
+  warp: {
+    summary: 'Warp · luminous dark blocks with fast-accent gradients and terminal focus.',
+    kicker: 'Warp Palette',
+    title: 'Gradient-lit turn blocks keep the run state readable at a glance.',
+    copy: 'A darker, more agentic surface modeled on Warp’s colorful terminal language: bright action rails, quiet depth, and prominent streaming states for prompts, approvals, and command output.',
+  },
+  shell: {
+    summary: 'Shell · dense terminal chrome inspired by VS Code and iTerm.',
+    kicker: 'Web Shell',
+    title: 'Editor-grade shell chrome makes remote turns feel closer to a real terminal.',
+    copy: 'A tighter terminal variant with darker panes, code-weight typography, and restrained grid texture so logs, approvals, and output-heavy turns feel native to a shell workflow.',
+  },
+};
 
 let ws = null;
 let currentThreadId = null;
 let currentTurnId = null;
 let turnActive = false;
 let pendingTurnBlock = null;
-let activeTurnId = null;
 
 const turnBlocks = new Map();
 const activeItems = new Map();
+
+function applyTheme(themeName) {
+  const resolvedTheme = THEMES[themeName] ? themeName : 'paper';
+  const theme = THEMES[resolvedTheme];
+
+  document.body.dataset.theme = resolvedTheme;
+  themeSummaryEl.textContent = theme.summary;
+  introKickerEl.textContent = theme.kicker;
+  introTitleEl.textContent = theme.title;
+  introCopyEl.textContent = theme.copy;
+
+  themeButtons.forEach((button) => {
+    const isActive = button.dataset.themeOption === resolvedTheme;
+    button.dataset.active = String(isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, resolvedTheme);
+  } catch {}
+}
+
+function initTheme() {
+  let savedTheme = null;
+
+  try {
+    savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  } catch {}
+
+  applyTheme(savedTheme || document.body.dataset.theme || 'paper');
+
+  themeButtons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      applyTheme(button.dataset.themeOption);
+    });
+
+    button.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      const nextIndex = (index + direction + themeButtons.length) % themeButtons.length;
+      const nextButton = themeButtons[nextIndex];
+      nextButton.focus();
+      applyTheme(nextButton.dataset.themeOption);
+    });
+  });
+}
 
 function setStatus(state, label) {
   statusChipEl.dataset.state = state;
@@ -887,6 +1362,47 @@ function updateThreadBadge(threadId) {
   threadIdEl.textContent = formatThreadId(threadId);
 }
 
+function normalizeItemType(itemType) {
+  if (!itemType) return '';
+  return `${itemType[0].toLowerCase()}${itemType.slice(1)}`;
+}
+
+function formatUserInputPart(part) {
+  if (!part || typeof part !== 'object') return '';
+
+  switch (part.type) {
+    case 'text':
+      return part.text || '';
+    case 'local_image':
+      return `[image: ${part.path || 'local file'}]`;
+    case 'image':
+      return `[image: ${part.image_url || 'remote image'}]`;
+    case 'mention':
+      return part.name ? `@${part.name}` : '@mention';
+    case 'skill':
+      return part.name ? `#${part.name}` : '#skill';
+    default:
+      return '';
+  }
+}
+
+function extractPromptText(item) {
+  if (!item || !Array.isArray(item.content)) return '';
+
+  return item.content
+    .map(formatUserInputPart)
+    .filter(Boolean)
+    .join('\n')
+    .trim();
+}
+
+function getCurrentTurnBlock() {
+  if (currentTurnId && turnBlocks.has(currentTurnId)) {
+    return turnBlocks.get(currentTurnId);
+  }
+  return pendingTurnBlock;
+}
+
 function connect() {
   const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
   ws = new WebSocket(`${proto}//${location.host}/ws`);
@@ -899,7 +1415,7 @@ function connect() {
   ws.onclose = () => {
     setStatus('offline', 'Reconnecting');
     sendBtn.disabled = true;
-    finalizeActiveTurnOnDisconnect();
+    finalizeActiveTurnsOnDisconnect();
     setTurnActive(false);
     addSystemMsg('Connection lost. Reconnecting…');
     setTimeout(connect, 2000);
@@ -921,30 +1437,27 @@ function handleMessage(msg) {
       break;
 
     case 'turn_started':
-      bindPendingBlockToTurn(msg.thread_id, msg.turn_id);
-      setTurnActive(true);
+      onTurnStarted(msg.thread_id, msg.turn_id);
       break;
 
     case 'item_started':
-      onItemStarted(msg.item_id, msg.item_type, msg.item);
+      onItemStarted(msg.thread_id, msg.turn_id, msg.item_id, msg.item_type, msg.item);
       break;
 
     case 'delta':
-      onDelta(msg.item_id, msg.delta_type, msg.content);
+      onDelta(msg.thread_id, msg.turn_id, msg.item_id, msg.delta_type, msg.content);
       break;
 
     case 'item_completed':
-      onItemCompleted(msg.item_id, msg.item_type, msg.item);
+      onItemCompleted(msg.thread_id, msg.turn_id, msg.item_id, msg.item_type, msg.item);
       break;
 
     case 'approval_request':
-      onApprovalRequest(msg.request_id, msg.method, msg.detail);
+      onApprovalRequest(msg.thread_id, msg.turn_id, msg.item_id, msg.request_id, msg.method, msg.detail);
       break;
 
     case 'turn_completed':
-      completeTurn(msg.status, msg.error);
-      setTurnActive(false);
-      sendBtn.disabled = false;
+      completeTurn(msg.thread_id, msg.turn_id, msg.status, msg.error);
       break;
 
     case 'error':
@@ -956,7 +1469,7 @@ function handleMessage(msg) {
     case 'disconnected':
       setStatus('offline', 'Codex offline');
       sendBtn.disabled = true;
-      finalizeActiveTurnOnDisconnect();
+      finalizeActiveTurnsOnDisconnect();
       setTurnActive(false);
       addSystemMsg('Codex server disconnected.');
       break;
@@ -996,6 +1509,8 @@ function createTurnBlock(promptText) {
     turnId: null,
     threadId: null,
     logCount: 0,
+    lastAnswerItemId: null,
+    promptEl: root.querySelector('.turn-prompt'),
     statusEl: root.querySelector('.turn-status'),
     answerEl: root.querySelector('.turn-answer'),
     placeholderEl: root.querySelector('.turn-answer-placeholder'),
@@ -1017,24 +1532,53 @@ function createPendingTurnBlock(promptText) {
   return block;
 }
 
-function bindPendingBlockToTurn(threadId, turnId) {
-  const block = pendingTurnBlock || createTurnBlock('');
-  block.turnId = turnId;
-  block.threadId = threadId;
-  currentThreadId = threadId;
-  currentTurnId = turnId;
-  activeTurnId = turnId;
-  pendingTurnBlock = null;
-  turnBlocks.set(turnId, block);
-  updateThreadBadge(threadId);
-  updateTurnBlockState(block, 'running', 'Streaming');
+function setTurnPrompt(block, promptText) {
+  if (!block || !promptText) return;
+  block.promptText = promptText;
+  block.promptEl.textContent = promptText;
 }
 
-function getCurrentTurnBlock() {
-  if (activeTurnId && turnBlocks.has(activeTurnId)) {
-    return turnBlocks.get(activeTurnId);
+function ensureTurnBlock(threadId, turnId, promptText = '') {
+  if (turnId && turnBlocks.has(turnId)) {
+    const block = turnBlocks.get(turnId);
+    if (!block.threadId && threadId) block.threadId = threadId;
+    if (promptText && !block.promptText) setTurnPrompt(block, promptText);
+    return block;
   }
-  return pendingTurnBlock;
+
+  const block = createTurnBlock(promptText);
+  block.turnId = turnId;
+  block.threadId = threadId;
+  turnBlocks.set(turnId, block);
+  return block;
+}
+
+function bindPendingBlockToTurn(threadId, turnId) {
+  const block = pendingTurnBlock || ensureTurnBlock(threadId, turnId);
+  block.turnId = turnId;
+  block.threadId = threadId;
+  turnBlocks.set(turnId, block);
+  currentThreadId = threadId;
+  currentTurnId = turnId;
+  pendingTurnBlock = null;
+  updateThreadBadge(threadId);
+  updateTurnBlockState(block, 'running', 'Streaming');
+  return block;
+}
+
+function onTurnStarted(threadId, turnId) {
+  if (pendingTurnBlock) {
+    bindPendingBlockToTurn(threadId, turnId);
+    setTurnActive(true);
+    return;
+  }
+
+  const block = ensureTurnBlock(threadId, turnId);
+  updateTurnBlockState(block, 'running', 'Streaming');
+
+  if (!currentThreadId) {
+    updateThreadBadge(threadId);
+  }
 }
 
 function updateTurnBlockState(block, state, label) {
@@ -1045,7 +1589,7 @@ function updateTurnBlockState(block, state, label) {
 
 function setTurnActive(active) {
   turnActive = active;
-  stopBtn.classList.toggle('visible', active);
+  stopBtn.classList.toggle('visible', active && Boolean(currentTurnId));
   if (!active) {
     currentTurnId = null;
   }
@@ -1059,9 +1603,29 @@ function revealAnswer(block) {
   block.answerEl.classList.add('has-content');
 }
 
-function appendAnswer(block, content) {
-  if (!block) return;
+function appendAnswer(block, itemId, content) {
+  if (!block || !content) return;
   revealAnswer(block);
+
+  const isNewAnswerItem = Boolean(
+    itemId &&
+    block.lastAnswerItemId &&
+    block.lastAnswerItemId !== itemId
+  );
+
+  if (isNewAnswerItem) {
+    const existing = block.answerEl.textContent;
+    if (existing && !existing.endsWith('\n') && !content.startsWith('\n')) {
+      block.answerEl.textContent += '\n\n';
+    } else if (existing.endsWith('\n') && !existing.endsWith('\n\n') && !content.startsWith('\n')) {
+      block.answerEl.textContent += '\n';
+    }
+  }
+
+  if (itemId) {
+    block.lastAnswerItemId = itemId;
+  }
+
   block.answerEl.textContent += content;
 }
 
@@ -1135,22 +1699,36 @@ function addLogSection(block, kind, meta, options = {}) {
   return { section, bodyEl, metaEl, footerEl };
 }
 
-function onItemStarted(itemId, itemType, item) {
-  const block = getCurrentTurnBlock();
+function onItemStarted(threadId, turnId, itemId, itemType, item) {
+  const normalizedType = normalizeItemType(itemType);
+  const promptText = normalizedType === 'userMessage' ? extractPromptText(item) : '';
+  const block = turnId ? ensureTurnBlock(threadId, turnId, promptText) : getCurrentTurnBlock();
   if (!block) return;
+
+  if (promptText) {
+    setTurnPrompt(block, promptText);
+  }
 
   let entry = null;
 
-  switch (itemType) {
+  switch (normalizedType) {
     case 'userMessage':
       return;
     case 'agentMessage':
-      entry = { kind: 'answer', block };
+      entry = {
+        kind: 'answer',
+        block,
+        itemId,
+        turnId,
+        receivedDelta: false,
+      };
       break;
     case 'reasoning':
       entry = {
         kind: 'reasoning',
         block,
+        itemId,
+        turnId,
         ...addLogSection(block, 'reasoning', 'Background analysis', { label: 'Reasoning' }),
       };
       break;
@@ -1159,6 +1737,8 @@ function onItemStarted(itemId, itemType, item) {
       entry = {
         kind: 'commandExecution',
         block,
+        itemId,
+        turnId,
         ...addLogSection(block, 'command', cmd, {
           label: 'Command',
           footer: 'running…',
@@ -1171,6 +1751,8 @@ function onItemStarted(itemId, itemType, item) {
       entry = {
         kind: 'fileChange',
         block,
+        itemId,
+        turnId,
         ...addLogSection(block, 'file-change', label, {
           label: 'File change',
         }),
@@ -1181,6 +1763,8 @@ function onItemStarted(itemId, itemType, item) {
       entry = {
         kind: 'plan',
         block,
+        itemId,
+        turnId,
         ...addLogSection(block, 'plan', 'Live update', { label: 'Plan' }),
       };
       break;
@@ -1191,13 +1775,14 @@ function onItemStarted(itemId, itemType, item) {
   activeItems.set(itemId, entry);
 }
 
-function onDelta(itemId, deltaType, content) {
+function onDelta(threadId, turnId, itemId, deltaType, content) {
   const entry = activeItems.get(itemId);
   if (!entry) return;
 
   switch (deltaType) {
     case 'agentMessage':
-      appendAnswer(entry.block, content);
+      entry.receivedDelta = true;
+      appendAnswer(entry.block, itemId, content);
       break;
     case 'reasoning':
     case 'commandOutput':
@@ -1210,11 +1795,16 @@ function onDelta(itemId, deltaType, content) {
   scrollToLatest(entry.block);
 }
 
-function onItemCompleted(itemId, itemType, item) {
+function onItemCompleted(threadId, turnId, itemId, itemType, item) {
   const entry = activeItems.get(itemId);
   if (!entry) return;
+  const normalizedType = normalizeItemType(itemType);
 
-  if (itemType === 'commandExecution' && entry.footerEl) {
+  if (normalizedType === 'agentMessage' && !entry.receivedDelta && typeof item.text === 'string' && item.text) {
+    appendAnswer(entry.block, itemId, item.text);
+  }
+
+  if (normalizedType === 'commandExecution' && entry.footerEl) {
     const exitCode = item.exitCode;
     const duration = item.durationMs;
     const status = item.status || 'completed';
@@ -1230,7 +1820,7 @@ function onItemCompleted(itemId, itemType, item) {
     }
   }
 
-  if (itemType === 'fileChange' && item.changes && Array.isArray(item.changes)) {
+  if (normalizedType === 'fileChange' && item.changes && Array.isArray(item.changes)) {
     if (entry.bodyEl && !entry.bodyEl.textContent.trim()) {
       entry.bodyEl.textContent = item.changes.map((change) =>
         `${change.kind}: ${change.path}\n${change.diff || ''}`
@@ -1241,7 +1831,7 @@ function onItemCompleted(itemId, itemType, item) {
     }
   }
 
-  if (itemType === 'reasoning' && entry.metaEl) {
+  if (normalizedType === 'reasoning' && entry.metaEl) {
     const summary = item.summary || '';
     entry.metaEl.textContent = summary
       ? summary.slice(0, 80) + (summary.length > 80 ? '…' : '')
@@ -1251,8 +1841,8 @@ function onItemCompleted(itemId, itemType, item) {
   activeItems.delete(itemId);
 }
 
-function onApprovalRequest(requestId, method, detail) {
-  const block = getCurrentTurnBlock();
+function onApprovalRequest(threadId, turnId, itemId, requestId, method, detail) {
+  const block = turnId ? ensureTurnBlock(threadId, turnId) : getCurrentTurnBlock();
   if (!block) return;
 
   let description = '';
@@ -1294,8 +1884,8 @@ function onApprovalRequest(requestId, method, detail) {
   scrollToLatest(block);
 }
 
-function completeTurn(status, error) {
-  const block = getCurrentTurnBlock();
+function completeTurn(threadId, turnId, status, error) {
+  const block = turnId ? turnBlocks.get(turnId) : getCurrentTurnBlock();
   if (!block) return;
 
   const normalized = normalizeTurnState(status);
@@ -1307,10 +1897,10 @@ function completeTurn(status, error) {
     setInlineError(block, `Turn failed: ${errMsg}`);
   }
 
-  if (block.turnId) {
-    activeTurnId = null;
+  if (turnId && turnId === currentTurnId) {
+    setTurnActive(false);
+    sendBtn.disabled = false;
   }
-  pendingTurnBlock = null;
 }
 
 function failCurrentTurn(errorText) {
@@ -1323,17 +1913,32 @@ function failCurrentTurn(errorText) {
   updateTurnBlockState(block, 'failed', 'Failed');
   setInlineError(block, errorText);
   block.root.classList.remove('is-active');
-  activeTurnId = null;
   pendingTurnBlock = null;
 }
 
-function finalizeActiveTurnOnDisconnect() {
-  const block = getCurrentTurnBlock();
-  if (!block) return;
-  updateTurnBlockState(block, 'interrupted', 'Disconnected');
-  setInlineError(block, 'Connection was lost before the turn finished.');
-  block.root.classList.remove('is-active');
-  activeTurnId = null;
+function finalizeActiveTurnsOnDisconnect() {
+  const seen = new Set();
+  const activeStates = new Set(['pending', 'running', 'stopping']);
+  const blocks = [];
+
+  if (pendingTurnBlock) {
+    blocks.push(pendingTurnBlock);
+  }
+
+  turnBlocks.forEach((block) => {
+    if (activeStates.has(block.root.dataset.state)) {
+      blocks.push(block);
+    }
+  });
+
+  blocks.forEach((block) => {
+    if (!block || seen.has(block)) return;
+    seen.add(block);
+    updateTurnBlockState(block, 'interrupted', 'Disconnected');
+    setInlineError(block, 'Connection was lost before the turn finished.');
+    block.root.classList.remove('is-active');
+  });
+
   pendingTurnBlock = null;
 }
 
@@ -1358,7 +1963,7 @@ function capitalize(text) {
 
 function stopTurn() {
   if (!currentThreadId || !currentTurnId) return;
-  const block = getCurrentTurnBlock();
+  const block = turnBlocks.get(currentTurnId) || getCurrentTurnBlock();
   if (block) updateTurnBlockState(block, 'stopping', 'Stopping…');
   ws.send(JSON.stringify({
     type: 'interrupt',
@@ -1453,6 +2058,8 @@ promptEl.addEventListener('keydown', (e) => {
 });
 sendBtn.addEventListener('click', sendMessage);
 
+initTheme();
+autoResize();
 connect();
 </script>
 </body>
