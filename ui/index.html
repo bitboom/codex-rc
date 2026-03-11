@@ -1695,6 +1695,7 @@ function createTurn(promptText = '') {
     errorText: '',
     detailsOpen: false,
     nextSegmentSeq: 1,
+    view: null,
   };
 
   turns.push(turn);
@@ -1725,6 +1726,17 @@ function ensureTurn(threadId, turnId, promptText = '') {
     if (!turn.threadId && threadId) turn.threadId = threadId;
     if (promptText && !turn.promptText) turn.promptText = promptText;
     return turn;
+  }
+
+  if (turnId && pendingTurnKey) {
+    const pendingTurn = turnByKey.get(pendingTurnKey);
+    if (pendingTurn) {
+      pendingTurn.turnId = turnId;
+      if (threadId) pendingTurn.threadId = threadId;
+      if (promptText && !pendingTurn.promptText) pendingTurn.promptText = promptText;
+      turnById.set(turnId, pendingTurn);
+      return pendingTurn;
+    }
   }
 
   const turn = createTurn(promptText);
@@ -1817,6 +1829,10 @@ function renderMessages() {
   messagesEl.dataset.layout = theme;
   messagesEl.innerHTML = '';
 
+  turns.forEach((turn) => {
+    turn.view = null;
+  });
+
   notices.forEach((notice) => {
     messagesEl.appendChild(renderNotice(notice, theme));
   });
@@ -1824,9 +1840,94 @@ function renderMessages() {
   turns.forEach((turn) => {
     const node = theme === 'shell' ? renderShellTurn(turn) : renderTurnCard(turn, theme);
     messagesEl.appendChild(node);
+    captureTurnView(turn, node, theme);
   });
 
   wireMessageInteractions();
+}
+
+function captureTurnView(turn, root, theme) {
+  const segmentEls = new Map();
+
+  root.querySelectorAll('[data-segment-id]').forEach((node) => {
+    segmentEls.set(node.dataset.segmentId, {
+      root: node,
+      metaEl: node.querySelector('.log-meta'),
+      bodyEl: node.querySelector('.log-body'),
+      footerEl: node.querySelector('.log-footer'),
+      noteEl: node.querySelector('.approval-note'),
+    });
+  });
+
+  turn.view = {
+    theme,
+    root,
+    promptEl: root.querySelector('.turn-prompt'),
+    statusEl: root.querySelector('.turn-status'),
+    answerEl: root.querySelector('.turn-answer'),
+    placeholderEl: root.querySelector('.turn-answer-placeholder'),
+    errorEl: root.querySelector('.turn-inline-error'),
+    detailsEl: root.querySelector('.turn-details'),
+    detailsMetaEl: root.querySelector('.turn-details-meta'),
+    segmentEls,
+  };
+}
+
+function syncTurnView(turn) {
+  if (!turn || !turn.view) return false;
+
+  if (turn.view.theme === 'shell') {
+    return false;
+  }
+
+  const answerText = getTurnAnswerText(turn);
+  if (turn.view.promptEl) {
+    turn.view.promptEl.textContent = turn.promptText || '';
+  }
+  if (turn.view.statusEl) {
+    turn.view.statusEl.textContent = turn.statusLabel;
+  }
+  if (turn.view.answerEl) {
+    turn.view.answerEl.textContent = answerText;
+    turn.view.answerEl.classList.toggle('has-content', Boolean(answerText));
+  }
+  if (turn.view.placeholderEl) {
+    turn.view.placeholderEl.textContent = getAnswerPlaceholder(turn);
+  }
+  if (turn.errorText && !turn.view.errorEl) {
+    return false;
+  }
+  if (turn.view.errorEl) {
+    turn.view.errorEl.textContent = turn.errorText || '';
+  }
+  if (turn.view.root) {
+    turn.view.root.dataset.state = turn.state;
+    turn.view.root.classList.toggle('is-active', isTurnActive(turn));
+  }
+  if (turn.view.detailsMetaEl && turn.view.detailsEl) {
+    const logs = getLogSegments(turn);
+    turn.view.detailsMetaEl.textContent = `${logs.length} section${logs.length === 1 ? '' : 's'}`;
+    turn.view.detailsEl.open = turn.detailsOpen;
+  }
+
+  return true;
+}
+
+function syncSegmentView(turn, segment) {
+  if (!turn || !turn.view || turn.view.theme !== 'block') return false;
+  const refs = turn.view.segmentEls.get(segment.id);
+  if (!refs) return false;
+
+  if (refs.metaEl) refs.metaEl.textContent = segment.meta || '';
+  if (refs.bodyEl) refs.bodyEl.textContent = segment.body || '';
+  if (refs.footerEl) {
+    refs.footerEl.textContent = segment.footer || '';
+    refs.footerEl.className = `log-footer${segment.footerClass ? ` ${segment.footerClass}` : ''}`;
+  }
+  if (refs.noteEl) refs.noteEl.textContent = segment.note || '';
+  if (refs.root && segment.state) refs.root.dataset.state = segment.state;
+
+  return true;
 }
 
 function renderNotice(notice, theme) {
@@ -1896,7 +1997,7 @@ function renderWorkLog(turn, logs) {
 
 function renderLogSegment(segment) {
   return `
-    <section class="log-section ${segment.kind}">
+    <section class="log-section ${segment.kind}" data-segment-id="${segment.id}">
       <div class="log-section-head">
         <div class="log-kind">${escapeHtml(segment.label || segment.kind)}</div>
         <div class="log-meta">${escapeHtml(segment.meta || '')}</div>
@@ -1919,7 +2020,7 @@ function renderApprovalCard(turn, segment, kicker) {
   const disabled = segment.state !== 'pending' ? ' disabled' : '';
 
   return `
-    <section class="approval-card" data-state="${escapeHtml(segment.state)}">
+    <section class="approval-card" data-segment-id="${segment.id}" data-state="${escapeHtml(segment.state)}">
       <div class="approval-card-head">
         <div class="approval-card-kicker">${escapeHtml(kicker)}</div>
         <div class="approval-card-title">${escapeHtml(segment.title)}</div>
@@ -2265,6 +2366,7 @@ function onItemStarted(threadId, turnId, itemId, itemType, item) {
 function onDelta(threadId, turnId, itemId, deltaType, content) {
   const entry = activeItems.get(itemId);
   if (!entry || !content) return;
+  const turn = turnByKey.get(entry.turnKey);
 
   switch (deltaType) {
     case 'agentMessage':
@@ -2279,7 +2381,11 @@ function onDelta(threadId, turnId, itemId, deltaType, content) {
       break;
   }
 
-  renderMessages();
+  const syncedAnswer = deltaType === 'agentMessage' && turn ? syncTurnView(turn) : false;
+  const syncedSegment = deltaType !== 'agentMessage' && turn ? syncSegmentView(turn, entry.segment) : false;
+  if (!syncedAnswer && !syncedSegment) {
+    renderMessages();
+  }
   scrollToLatest(entry.turnKey);
 }
 
@@ -2287,6 +2393,7 @@ function onItemCompleted(threadId, turnId, itemId, itemType, item) {
   const entry = activeItems.get(itemId);
   if (!entry) return;
   const normalizedType = normalizeItemType(itemType);
+  const turn = turnByKey.get(entry.turnKey);
 
   if (normalizedType === 'agentMessage' && !entry.receivedDelta && typeof item.text === 'string' && item.text) {
     entry.segment.text = item.text;
@@ -2325,7 +2432,11 @@ function onItemCompleted(threadId, turnId, itemId, itemType, item) {
   }
 
   activeItems.delete(itemId);
-  renderMessages();
+  const syncedAnswer = normalizedType === 'agentMessage' && turn ? syncTurnView(turn) : false;
+  const syncedSegment = normalizedType !== 'agentMessage' && turn ? syncSegmentView(turn, entry.segment) : false;
+  if (!syncedAnswer && !syncedSegment) {
+    renderMessages();
+  }
   scrollToLatest(entry.turnKey);
 }
 
@@ -2379,7 +2490,9 @@ function completeTurn(threadId, turnId, status, error) {
     sendBtn.disabled = false;
   }
 
-  renderMessages();
+  if (!syncTurnView(turn)) {
+    renderMessages();
+  }
   scrollToLatest(turn.key);
 }
 
@@ -2393,7 +2506,9 @@ function failCurrentTurn(errorText) {
   updateTurnState(turn, 'failed', 'Failed');
   turn.errorText = errorText;
   pendingTurnKey = null;
-  renderMessages();
+  if (!syncTurnView(turn)) {
+    renderMessages();
+  }
   scrollToLatest(turn.key);
 }
 
@@ -2432,7 +2547,9 @@ function stopTurn() {
   const turn = turnById.get(currentTurnId) || getCurrentTurn();
   if (turn) {
     updateTurnState(turn, 'stopping', 'Stopping…');
-    renderMessages();
+    if (!syncTurnView(turn)) {
+      renderMessages();
+    }
     scrollToLatest(turn.key);
   }
 
@@ -2468,7 +2585,10 @@ function sendApproval(turnKey, segmentId, decision) {
     segment.note = 'Approval sent. Waiting for Codex to continue.';
   }
 
-  renderMessages();
+  const syncedSegment = syncSegmentView(turn, segment);
+  if (!syncedSegment) {
+    renderMessages();
+  }
   scrollToLatest(turn.key);
 
   ws.send(JSON.stringify({
