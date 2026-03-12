@@ -41,16 +41,31 @@ pub struct CodexClient {
     pending_requests: HashMap<u64, PendingRequest>,
     /// Maps server-sent request IDs (for approvals) → item info for forwarding responses
     pending_approvals: HashMap<String, Value>,
+    /// Maps thread ids to the websocket client that owns them
+    thread_owners: HashMap<String, u64>,
+    /// Maps turn ids to the websocket client that owns them
+    turn_owners: HashMap<String, u64>,
 }
 
 enum PendingRequest {
     ThreadStart {
+        client_id: u64,
         /// Original prompt to start a turn after thread is created
         prompt: String,
         model: Option<String>,
     },
-    TurnStart,
-    TurnInterrupt,
+    TurnStart { client_id: u64, thread_id: String },
+    TurnInterrupt { client_id: u64 },
+}
+
+impl PendingRequest {
+    fn client_id(&self) -> u64 {
+        match self {
+            PendingRequest::ThreadStart { client_id, .. }
+            | PendingRequest::TurnStart { client_id, .. }
+            | PendingRequest::TurnInterrupt { client_id } => *client_id,
+        }
+    }
 }
 
 async fn write_msg(stdin: &mut BufWriter<tokio::process::ChildStdin>, msg: &Value) -> Result<()> {
@@ -125,6 +140,8 @@ impl CodexClient {
             from_codex_tx,
             pending_requests: HashMap::new(),
             pending_approvals: HashMap::new(),
+            thread_owners: HashMap::new(),
+            turn_owners: HashMap::new(),
         })
     }
 
@@ -185,9 +202,31 @@ impl CodexClient {
         Ok(())
     }
 
+    fn lookup_client_id(&self, thread_id: &str, turn_id: &str) -> Option<u64> {
+        self.turn_owners
+            .get(turn_id)
+            .copied()
+            .or_else(|| self.thread_owners.get(thread_id).copied())
+    }
+
+    fn register_turn_owner(&mut self, thread_id: &str, turn_id: &str, client_id: u64) {
+        if !thread_id.is_empty() {
+            self.thread_owners
+                .insert(thread_id.to_string(), client_id);
+        }
+        if !turn_id.is_empty() {
+            self.turn_owners.insert(turn_id.to_string(), client_id);
+        }
+    }
+
     async fn handle_to_codex(&mut self, msg: ToCodexMessage) -> Result<()> {
         match msg {
-            ToCodexMessage::StartTurn { prompt, cwd, model } => {
+            ToCodexMessage::StartTurn {
+                client_id,
+                prompt,
+                cwd,
+                model,
+            } => {
                 // Create a new thread first, then start a turn
                 let id = next_id();
                 let params = thread_start_params(cwd.as_deref(), model.as_deref());
@@ -197,10 +236,18 @@ impl CodexClient {
                     "params": params,
                 });
                 self.pending_requests
-                    .insert(id, PendingRequest::ThreadStart { prompt, model });
+                    .insert(id, PendingRequest::ThreadStart {
+                        client_id,
+                        prompt,
+                        model,
+                    });
                 write_msg(&mut self.stdin, &req).await?;
             }
-            ToCodexMessage::Reply { thread_id, prompt } => {
+            ToCodexMessage::Reply {
+                client_id,
+                thread_id,
+                prompt,
+            } => {
                 let id = next_id();
                 let req = json!({
                     "method": "turn/start",
@@ -210,10 +257,18 @@ impl CodexClient {
                         "input": [{ "type": "text", "text": prompt }],
                     }
                 });
-                self.pending_requests.insert(id, PendingRequest::TurnStart);
+                self.thread_owners.insert(thread_id.clone(), client_id);
+                self.pending_requests.insert(
+                    id,
+                    PendingRequest::TurnStart {
+                        client_id,
+                        thread_id,
+                    },
+                );
                 write_msg(&mut self.stdin, &req).await?;
             }
             ToCodexMessage::ApprovalResponse {
+                client_id: _client_id,
                 request_id,
                 decision,
             } => {
@@ -225,7 +280,11 @@ impl CodexClient {
                 self.pending_approvals.remove(&request_id.to_string());
                 write_msg(&mut self.stdin, &resp).await?;
             }
-            ToCodexMessage::Interrupt { thread_id, turn_id } => {
+            ToCodexMessage::Interrupt {
+                client_id,
+                thread_id,
+                turn_id,
+            } => {
                 let id = next_id();
                 let req = json!({
                     "method": "turn/interrupt",
@@ -236,7 +295,7 @@ impl CodexClient {
                     }
                 });
                 self.pending_requests
-                    .insert(id, PendingRequest::TurnInterrupt);
+                    .insert(id, PendingRequest::TurnInterrupt { client_id });
                 write_msg(&mut self.stdin, &req).await?;
             }
         }
@@ -270,19 +329,27 @@ impl CodexClient {
 
         match method {
             "item/commandExecution/requestApproval" | "item/fileChange/requestApproval" => {
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping approval request without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
+
                 self.pending_approvals
                     .insert(request_id.to_string(), request_id.clone());
                 let _ = self.from_codex_tx.send(FromCodexMessage::ApprovalRequest {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -310,21 +377,43 @@ impl CodexClient {
         match method {
             "turn/started" => {
                 let turn = &params["turn"];
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = turn
+                    .get("id")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping turn/started without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
+                self.register_turn_owner(thread_id, turn_id, client_id);
                 let _ = self.from_codex_tx.send(FromCodexMessage::TurnStarted {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: turn
-                        .get("id")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                 });
             }
             "turn/completed" => {
                 let turn = &params["turn"];
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = turn
+                    .get("id")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping turn/completed without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let status = turn
                     .get("status")
                     .and_then(|v| v.as_str())
@@ -332,33 +421,33 @@ impl CodexClient {
                     .to_string();
                 let error = turn.get("error").cloned();
                 let _ = self.from_codex_tx.send(FromCodexMessage::TurnCompleted {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: turn
-                        .get("id")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     status,
                     error,
                 });
             }
             "item/started" => {
                 let item = &params["item"];
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping item/started without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::ItemStarted {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: item
                         .get("id")
                         .and_then(|v| v.as_str())
@@ -374,17 +463,24 @@ impl CodexClient {
             }
             "item/completed" => {
                 let item = &params["item"];
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping item/completed without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::ItemCompleted {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: item
                         .get("id")
                         .and_then(|v| v.as_str())
@@ -399,17 +495,24 @@ impl CodexClient {
                 });
             }
             "item/agentMessage/delta" => {
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping agentMessage delta without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -424,17 +527,24 @@ impl CodexClient {
                 });
             }
             "item/reasoning/summaryTextDelta" | "item/reasoning/textDelta" => {
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping reasoning delta without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -449,17 +559,24 @@ impl CodexClient {
                 });
             }
             "item/commandExecution/outputDelta" => {
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping commandExecution delta without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -474,17 +591,24 @@ impl CodexClient {
                 });
             }
             "item/fileChange/outputDelta" => {
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping fileChange delta without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -499,17 +623,24 @@ impl CodexClient {
                 });
             }
             "item/plan/delta" => {
+                let thread_id = params
+                    .get("threadId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let turn_id = params
+                    .get("turnId")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default();
+                let Some(client_id) = self.lookup_client_id(thread_id, turn_id) else {
+                    warn!(
+                        "Dropping plan delta without known client owner: thread_id={thread_id}, turn_id={turn_id}"
+                    );
+                    return;
+                };
                 let _ = self.from_codex_tx.send(FromCodexMessage::Delta {
-                    thread_id: params
-                        .get("threadId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
-                    turn_id: params
-                        .get("turnId")
-                        .and_then(|v| v.as_str())
-                        .unwrap_or_default()
-                        .to_string(),
+                    client_id,
+                    thread_id: thread_id.to_string(),
+                    turn_id: turn_id.to_string(),
                     item_id: params
                         .get("itemId")
                         .and_then(|v| v.as_str())
@@ -558,14 +689,21 @@ impl CodexClient {
                 .to_string();
             let _ = self
                 .from_codex_tx
-                .send(FromCodexMessage::Error { error: error_msg });
+                .send(FromCodexMessage::Error {
+                    client_id: Some(pending.client_id()),
+                    error: error_msg,
+                });
             return Ok(());
         }
 
         let result = val.get("result").cloned().unwrap_or(json!({}));
 
         match pending {
-            PendingRequest::ThreadStart { prompt, model } => {
+            PendingRequest::ThreadStart {
+                client_id,
+                prompt,
+                model,
+            } => {
                 let thread_id = result
                     .get("thread")
                     .and_then(|t| t.get("id"))
@@ -575,15 +713,17 @@ impl CodexClient {
 
                 if thread_id.is_empty() {
                     let _ = self.from_codex_tx.send(FromCodexMessage::Error {
+                        client_id: Some(client_id),
                         error: "thread/start returned no thread id".to_string(),
                     });
                     return Ok(());
                 }
 
                 info!("Thread created: {thread_id}");
+                self.thread_owners.insert(thread_id.clone(), client_id);
 
                 // Now start a turn on this thread
-                let turn_id = next_id();
+                let request_id = next_id();
                 let mut turn_params = json!({
                     "threadId": thread_id,
                     "input": [{ "type": "text", "text": prompt }],
@@ -593,23 +733,34 @@ impl CodexClient {
                 }
                 let req = json!({
                     "method": "turn/start",
-                    "id": turn_id,
+                    "id": request_id,
                     "params": turn_params,
                 });
-                self.pending_requests
-                    .insert(turn_id, PendingRequest::TurnStart);
+                self.pending_requests.insert(
+                    request_id,
+                    PendingRequest::TurnStart {
+                        client_id,
+                        thread_id,
+                    },
+                );
                 write_msg(&mut self.stdin, &req).await?;
             }
-            PendingRequest::TurnStart => {
+            PendingRequest::TurnStart {
+                client_id,
+                thread_id,
+            } => {
                 // turn/start response — the streaming will come via notifications
                 let turn = &result["turn"];
+                if let Some(turn_id) = turn.get("id").and_then(|v| v.as_str()) {
+                    self.register_turn_owner(&thread_id, turn_id, client_id);
+                }
                 debug!(
                     "Turn started: id={}, status={}",
                     turn.get("id").and_then(|v| v.as_str()).unwrap_or("?"),
                     turn.get("status").and_then(|v| v.as_str()).unwrap_or("?"),
                 );
             }
-            PendingRequest::TurnInterrupt => {
+            PendingRequest::TurnInterrupt { .. } => {
                 debug!("Turn interrupt acknowledged");
             }
         }
